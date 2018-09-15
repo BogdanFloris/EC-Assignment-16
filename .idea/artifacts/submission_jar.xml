@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="submission:jar">
+    <output-path>$PROJECT_DIR$/out/production/assignment</output-path>
+    <root id="archive" name="submission.jar">
+      <element id="module-output" name="assignment" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/contest.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
