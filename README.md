@@ -1,6 +1,10 @@
 # Evolutionary Computing Project Group 16
 
 ### This program was tested on Mac and Linux.
+### IMPORTANT: When you commit just add the .java files using git add Individual.java for instance and then use the following command to reset everything:
+```
+git reset --hard HEAD
+```
 
 ## Steps to import the the project:
 1. Install JDK

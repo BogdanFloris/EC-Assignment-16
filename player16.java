@@ -61,7 +61,7 @@ public class player16 implements ContestSubmission {
             // inherit from parent
             child = new Individual(parent.values);
             // mutate the child
-            child.nonUniformMutation(this.rnd_);
+            child.mutate(Util.Mutation.NON_UNIFORM, this.rnd_);
             // Check fitness of unknown function
             child.fitness = (double) evaluation_.evaluate(child.values);
             evals++;
