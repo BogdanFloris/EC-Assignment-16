@@ -9,7 +9,9 @@ class Individual {
     // the 10 values of the individual (phenotypes)
     double[] values;
     // the fitness of this specific individual
-    double fitness;
+    private double fitness;
+    // the mutation step sizes used for uncorrelated mutations
+    private double[] sigma;
 
     /**
      * Constructor with only a Random object
@@ -23,6 +25,10 @@ class Individual {
         for (int i = 0; i < Util.DIMENSION; i++) {
             this.values[i] = generateInRange(rnd_.nextDouble());
         }
+        this.sigma = new double[Util.DIMENSION];
+        for (int i = 0; i < Util.DIMENSION; i++) {
+            this.sigma[i] = Util.MUTATION_STEP_SIZE;
+        }
     }
 
     /**
@@ -35,6 +41,10 @@ class Individual {
         this.fitness = 0.0;
         for (int i = 0; i < Util.DIMENSION; i++) {
             this.values[i] = values[i];
+        }
+        this.sigma = new double[Util.DIMENSION];
+        for (int i = 0; i < Util.DIMENSION; i++) {
+            this.sigma[i] = Util.MUTATION_STEP_SIZE;
         }
     }
 
