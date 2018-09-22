@@ -85,8 +85,10 @@ class Individual {
      */
     private void uniformMutation(Random rnd_) {
         for (int i = 0; i < Util.DIMENSION; i++) {
-            // TODO: add MUTATION_RATE check
-            this.values[i] = generateInRange(rnd_.nextGaussian());
+            double chance = rnd_.nextDouble();
+            if (chance < Util.MUTATION_RATE) {
+                this.values[i] = generateInRange(rnd_.nextGaussian());
+            }
         }
     }
 
