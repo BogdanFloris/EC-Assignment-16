@@ -53,7 +53,7 @@ public class player16 implements ContestSubmission {
         Individual parent = new Individual(this.rnd_);
         Individual child;
         // calculate fitness
-        parent.fitness = (double) evaluation_.evaluate(parent.values);
+        parent.setFitness((double) evaluation_.evaluate(parent.values));
         // loop
         while (evals < evaluations_limit_) {
             // Select parents
@@ -61,12 +61,12 @@ public class player16 implements ContestSubmission {
             // inherit from parent
             child = new Individual(parent.values);
             // mutate the child
-            child.mutate(Util.Mutation.NON_UNIFORM, this.rnd_);
+            child.mutate(Util.Mutation.UNCORRELATED_ONE_STEP, this.rnd_, Util.epsilon);
             // Check fitness of unknown function
-            child.fitness = (double) evaluation_.evaluate(child.values);
+            child.setFitness((double) evaluation_.evaluate(child.values));
             evals++;
             // Select survivors
-            if (child.fitness > parent.fitness) {
+            if (child.getFitness() > parent.getFitness()) {
                 // Select the individual with the highest fitness
                 parent = child;
                 System.out.println(evals + "parent: " + Arrays.toString(parent.values));

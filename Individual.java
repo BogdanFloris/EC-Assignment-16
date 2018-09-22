@@ -10,8 +10,10 @@ class Individual {
     double[] values;
     // the fitness of this specific individual
     private double fitness;
-    // the mutation step sizes used for uncorrelated mutations
-    private double[] sigma;
+    // the mutation step size used for uncorrelated mutations with one step size
+    private double sigma = Util.MUTATION_STEP_SIZE;
+    // the mutation step sizes used for uncorrelated mutations with n steps
+    private double[] sigmas;
 
     /**
      * Constructor with only a Random object
@@ -22,12 +24,12 @@ class Individual {
         this.values = new double[Util.DIMENSION];
         this.fitness = 0.0;
         // initialize values
-        for (int i = 0; i < Util.DIMENSION; i++) {
+        for (int i = 0; i < this.values.length; i++) {
             this.values[i] = generateInRange(rnd_.nextDouble());
         }
-        this.sigma = new double[Util.DIMENSION];
-        for (int i = 0; i < Util.DIMENSION; i++) {
-            this.sigma[i] = Util.MUTATION_STEP_SIZE;
+        this.sigmas = new double[Util.DIMENSION];
+        for (int i = 0; i < this.sigmas.length; i++) {
+            this.sigmas[i] = sigma;
         }
     }
 
@@ -39,16 +41,16 @@ class Individual {
     Individual(double[] values) {
         this.values = new double[Util.DIMENSION];
         this.fitness = 0.0;
-        for (int i = 0; i < Util.DIMENSION; i++) {
+        for (int i = 0; i < this.values.length; i++) {
             this.values[i] = values[i];
         }
-        this.sigma = new double[Util.DIMENSION];
-        for (int i = 0; i < Util.DIMENSION; i++) {
-            this.sigma[i] = Util.MUTATION_STEP_SIZE;
+        this.sigmas = new double[Util.DIMENSION];
+        for (int i = 0; i < this.sigmas.length; i++) {
+            this.sigmas[i] = sigma;
         }
     }
 
-    void mutate(Util.Mutation mutation, Random rnd_) {
+    void mutate(Util.Mutation mutation, Random rnd_, double epsilon) {
         switch (mutation) {
             case UNIFORM:
                 uniformMutation(rnd_);
@@ -57,13 +59,13 @@ class Individual {
                 nonUniformMutation(rnd_);
                 break;
             case UNCORRELATED_ONE_STEP:
-                // TODO: add function call
+                uncorrelatedMutationOneStep(rnd_, epsilon);
                 break;
             case UNCORRELATED_N_STEP:
-                // TODO: add function call
+                uncorrelatedMutationNStep(rnd_, epsilon);
                 break;
-            case C0RRELATED:
-                // TODO: add function call
+            case CORRELATED:
+                correlatedMutation(rnd_, epsilon);
                 break;
             default:
                 System.err.println("Invalid mutation");
@@ -84,9 +86,9 @@ class Individual {
      * @param rnd_ Random object to be used
      */
     private void uniformMutation(Random rnd_) {
-        for (int i = 0; i < Util.DIMENSION; i++) {
+        for (int i = 0; i < this.values.length; i++) {
             double chance = rnd_.nextDouble();
-            if (chance < Util.MUTATION_RATE) {
+            if (chance < sigma) {
                 this.values[i] = generateInRange(rnd_.nextGaussian());
             }
         }
@@ -98,8 +100,8 @@ class Individual {
      * @param rnd_ Random object to be used
      */
     private void nonUniformMutation(Random rnd_) {
-        for (int i = 0; i < Util.DIMENSION; i++) {
-            this.values[i] += Util.MUTATION_STEP_SIZE * rnd_.nextGaussian();
+        for (int i = 0; i < this.values.length; i++) {
+            this.values[i] += sigma * rnd_.nextGaussian();
             // make sure the values stay within the bounds
             this.values[i] = keepInRange(this.values[i]);
         }
@@ -110,8 +112,14 @@ class Individual {
      *
      * @param rnd_ Random object to be used
      */
-    private void uncorrelatedMutationOneStep(Random rnd_) {
-
+    private void uncorrelatedMutationOneStep(Random rnd_, double epsilon) {
+        sigma = Math.max(epsilon, sigma * Math.exp(
+                Util.localTau * rnd_.nextGaussian()));
+        for (int i = 0; i < this.values.length; i++) {
+            this.values[i] += sigma * rnd_.nextGaussian();
+            // make sure the values stay within bounds
+            this.values[i] = keepInRange(this.values[i]);
+        }
     }
 
     /**
@@ -119,7 +127,7 @@ class Individual {
      *
      * @param rnd_ Random object to be used
      */
-    private void uncorrelatedMutationNStep(Random rnd_) {
+    private void uncorrelatedMutationNStep(Random rnd_, double epsilon) {
 
     }
 
@@ -128,7 +136,7 @@ class Individual {
      *
      * @param rnd_ Random object to be used
      */
-    private void correlatedMutation(Random rnd_) {
+    private void correlatedMutation(Random rnd_, double epsilon) {
 
     }
 

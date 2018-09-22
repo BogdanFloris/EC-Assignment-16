@@ -14,12 +14,25 @@ class Util {
     // The mutation rate used in the uniform mutation to determine which genotypes are changed
     final static double MUTATION_RATE = 0.1;
 
+    // local tau
+    static double localTau;
+    // global tau
+    static double globalTau;
+    // epsilon
+    static double epsilon;
+
     // mutation options for an individual
     enum Mutation {
         UNIFORM,
         NON_UNIFORM,
         UNCORRELATED_ONE_STEP,
         UNCORRELATED_N_STEP,
-        C0RRELATED
+        CORRELATED
+    }
+
+    Util() {
+        localTau = 1 / Math.sqrt(DIMENSION);
+        globalTau = 1 / Math.sqrt(DIMENSION);
+        epsilon = 0.01;
     }
 }
