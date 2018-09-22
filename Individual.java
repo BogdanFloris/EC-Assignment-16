@@ -60,6 +60,14 @@ class Individual {
         }
     }
 
+    public double getFitness() {
+        return fitness;
+    }
+
+    public void setFitness(double fitness) {
+        this.fitness = fitness;
+    }
+
     /**
      * Uniform Mutation
      *
@@ -83,6 +91,33 @@ class Individual {
             // make sure the values stay within the bounds
             this.values[i] = keepInRange(this.values[i]);
         }
+    }
+
+    /**
+     * Uncorrelated mutation with one step size
+     *
+     * @param rnd_ Random object to be used
+     */
+    private void uncorrelatedMutationOneStep(Random rnd_) {
+
+    }
+
+    /**
+     * Uncorrelated mutation with N step size
+     *
+     * @param rnd_ Random object to be used
+     */
+    private void uncorrelatedMutationNStep(Random rnd_) {
+
+    }
+
+    /**
+     * Correlated mutation
+     *
+     * @param rnd_ Random object to be used
+     */
+    private void correlatedMutation(Random rnd_) {
+
     }
 
     /**
