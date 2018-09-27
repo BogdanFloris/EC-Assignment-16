@@ -14,6 +14,10 @@ class Individual {
     private double sigma = Util.MUTATION_STEP_SIZE;
     // the mutation step sizes used for uncorrelated mutations with n steps
     private double[] sigmas;
+    // alphas used for the correlated mutation
+    private double[] alphas;
+    // covariance matrix used for the correlated mutation
+    private double[][] cov;
 
     /**
      * Constructor with only a Random object
@@ -114,7 +118,7 @@ class Individual {
      */
     private void uncorrelatedMutationOneStep(Random rnd_, double epsilon) {
         this.sigma = Math.max(epsilon, this.sigma * Math.exp(
-                Util.tau * rnd_.nextGaussian()));
+                Util.tauSimple * rnd_.nextGaussian()));
         for (int i = 0; i < this.values.length; i++) {
             this.values[i] += this.sigma * rnd_.nextGaussian();
             // make sure the values stay within bounds
@@ -128,13 +132,13 @@ class Individual {
      * @param rnd_ Random object to be used
      */
     private void uncorrelatedMutationNStep(Random rnd_, double epsilon) {
-        double localTau = Util.localTau;
-        double globalTau = Util.globalTau;
-        double tauGauss = localTau * rnd_.nextGaussian();
+        double tau = Util.tau;
+        double tauPrime = Util.tauPrime;
+        double tauGauss = tauPrime * rnd_.nextGaussian();
 
         for (int i = 0; i < this.values.length; i++) {
             this.sigmas[i] = Math.max(epsilon, this.sigmas[i] * Math.exp(
-                    tauGauss + globalTau * rnd_.nextGaussian()));
+                    tauGauss + tau * rnd_.nextGaussian()));
             this.values[i] += this.sigmas[i] * rnd_.nextGaussian();
             this.values[i] = keepInRange(this.values[i]);
         }
@@ -146,6 +150,17 @@ class Individual {
      * @param rnd_ Random object to be used
      */
     private void correlatedMutation(Random rnd_, double epsilon) {
+        // initialize parameters
+        double tau = Util.tau;
+        double tauPrime = Util.tauPrime;
+        double beta = 5;
+        int n = Util.DIMENSION;
+        int nAlpha = n * (n - 1) / 2;
+
+        // initialize arrays
+        alphas = new double[n];
+        cov = new double[n][n];
+
 
     }
 

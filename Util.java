@@ -14,12 +14,12 @@ class Util {
     // The mutation rate used in the uniform mutation to determine which genotypes are changed
     final static double MUTATION_RATE = 0.1;
 
-    // tau
+    // tauSimple
+    static double tauSimple;
+    // local tauSimple
+    static double tauPrime;
+    // global tauSimple
     static double tau;
-    // local tau
-    static double localTau;
-    // global tau
-    static double globalTau;
     // epsilon
     static double epsilon;
 
@@ -33,9 +33,9 @@ class Util {
     }
 
     Util() {
-        tau = 1 / Math.sqrt(DIMENSION);
-        localTau = 1 / Math.sqrt(2 * DIMENSION);
-        globalTau = 1 / Math.sqrt(2 * Math.sqrt(DIMENSION));
+        tauSimple = 1 / Math.sqrt(DIMENSION);
+        tauPrime = 1 / Math.sqrt(2 * DIMENSION);
+        tau = 1 / Math.sqrt(2 * Math.sqrt(DIMENSION));
         epsilon = 0.01;
     }
 }
