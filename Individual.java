@@ -1,4 +1,5 @@
 import java.util.Random;
+import org.apache.commons.math3.distribution.MultivariateNormalDistribution;
 
 /**
  * Class that represents an Individual and contains
