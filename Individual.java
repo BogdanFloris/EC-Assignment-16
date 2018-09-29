@@ -165,8 +165,6 @@ class Individual {
         this.alphas = new double[nAlpha];
         // covariance matrix
         this.cov = new double[n][n];
-        // means used for the multivariate normal distribution
-        double[] means = new double[n];
         // change in x to be added (sampled from the multivariate normal dist)
         double[] dx = new double[n];
 
@@ -188,11 +186,35 @@ class Individual {
         calculateCovarianceMatrix(n);
 
         // get the samples from the multivariate normal distribution
+        dx = multivariateNormalDistribution(n, rnd_)[0];
         // mutate the genotype
         for (int i = 0; i < n; i++) {
             this.values[i] += dx[i];
             this.values[i] = keepInRange(this.values[i]);
         }
+    }
+
+    /**
+     * Generates values from the Multivariate Normal Distribution
+     * @param n the dimension
+     * @param rnd_ the randomizer
+     * @return the samples from the distribution
+     */
+    private double[][] multivariateNormalDistribution(int n, Random rnd_) {
+        // covariance matrix
+        Matrix covMatrix = new Matrix(this.cov);
+        // generate the L from the Cholesky Decomposition
+        Matrix L = covMatrix.chol().getL();
+
+        // draw samples from the normal gaussian
+        double[] normSamples = new double[n];
+        for (int i = 0; i < n; i++) {
+            normSamples[i] = rnd_.nextGaussian();
+        }
+
+        // construct Matrix
+        Matrix z = new Matrix(normSamples, 1);
+        return L.times(z.transpose()).transpose().getArray();
     }
 
     /**
