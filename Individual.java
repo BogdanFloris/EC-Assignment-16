@@ -1,5 +1,4 @@
 import java.util.Random;
-import org.apache.commons.math3.distribution.MultivariateNormalDistribution;
 
 /**
  * Class that represents an Individual and contains
@@ -189,7 +188,6 @@ class Individual {
         calculateCovarianceMatrix(n);
 
         // get the samples from the multivariate normal distribution
-        dx = new MultivariateNormalDistribution(means, cov).sample();
         // mutate the genotype
         for (int i = 0; i < n; i++) {
             this.values[i] += dx[i];
