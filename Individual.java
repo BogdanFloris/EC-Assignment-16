@@ -156,13 +156,72 @@ class Individual {
         double tauPrime = Util.tauPrime;
         double beta = 5;
         int n = Util.DIMENSION;
+
+        // calculate n alpha
         int nAlpha = n * (n - 1) / 2;
+        // calculate tau multiplied by a normal distribution sample
+        double tauGauss = tauPrime * rnd_.nextGaussian();
 
         // initialize arrays
-        alphas = new double[n];
-        cov = new double[n][n];
+        this.alphas = new double[nAlpha];
+        // covariance matrix
+        this.cov = new double[n][n];
+        // means used for the multivariate normal distribution
+        double[] means = new double[n];
+        // change in x to be added (sampled from the multivariate normal dist)
+        double[] dx = new double[n];
 
+        // mutate sigmas
+        for (int i = 0; i < n; i++) {
+            this.sigmas[i] = Math.max(epsilon, this.sigmas[i] * Math.exp(
+                    tauGauss + tau * rnd_.nextGaussian()));
+        }
 
+        // mutate alphas
+        for (int j = 0; j < nAlpha; j++) {
+            this.alphas[j] += beta * rnd_.nextGaussian();
+            if (Math.abs(this.alphas[j]) > Math.PI) {
+                this.alphas[j] -= 2 * Math.PI * Math.signum(this.alphas[j]);
+            }
+        }
+
+        // calculate covariance matrix
+        calculateCovarianceMatrix(n);
+
+        // get the samples from the multivariate normal distribution
+        dx = new MultivariateNormalDistribution(means, cov).sample();
+        // mutate the genotype
+        for (int i = 0; i < n; i++) {
+            this.values[i] += dx[i];
+            this.values[i] = keepInRange(this.values[i]);
+        }
+    }
+
+    /**
+     * Calculates the covariance matrix
+     *
+     * @param n dimension of the function
+     */
+    private void calculateCovarianceMatrix(int n) {
+        // index used to traverse the alphas array
+        int alphaIndex = 0;
+        // calculate values on the diagonal and above it
+        for (int i = 0; i < n; i++) {
+            this.cov[i][i] = Math.pow(this.sigmas[i], 2);
+            for (int j = i + 1; j < n; j++) {
+                this.cov[i][j] = 0.5 * (Math.pow(this.sigmas[i], 2) -
+                        Math.pow(this.sigmas[j], 2)) * Math.tan(
+                                2 * this.alphas[alphaIndex]);
+            }
+            alphaIndex++;
+        }
+
+        // calculate values under the diagonal
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < i; j++) {
+                this.cov[i][j] = this.cov[j][i];
+            }
+        }
     }
 
     /**
