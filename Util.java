@@ -13,6 +13,8 @@ class Util {
     final static double MUTATION_STEP_SIZE = 0.25;
     // The mutation rate used in the uniform mutation to determine which genotypes are changed
     final static double MUTATION_RATE = 0.1;
+    // The parameter s used in linear parent selection (P. 82)
+    final static double PARENT_LINEAR_S = 2;
 
     // tauSimple
     static double tauSimple;
@@ -30,6 +32,12 @@ class Util {
         UNCORRELATED_ONE_STEP,
         UNCORRELATED_N_STEP,
         CORRELATED
+    }
+
+    // parent selection options for a population
+    enum ParentSelection {
+        LINEAR_RANK,
+        EXPONENTIAL_RANK
     }
 
     // The ratio of offspring to population size

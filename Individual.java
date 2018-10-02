@@ -10,6 +10,8 @@ class Individual {
     double[] values;
     // the fitness of this specific individual
     private double fitness;
+    // the parent selection probability of this specific individual
+    private double selectionProbability;
     // the mutation step size used for uncorrelated mutations with one step size
     private double sigma = Util.MUTATION_STEP_SIZE;
     // the mutation step sizes used for uncorrelated mutations with n steps
@@ -83,6 +85,10 @@ class Individual {
     public void setFitness(double fitness) {
         this.fitness = fitness;
     }
+
+    public double getSelectionProbability() { return selectionProbability; }
+
+    public void setSelectionProbability(double prob) { this.selectionProbability = prob; }
 
     /**
      * Uniform Mutation

@@ -1,4 +1,5 @@
 import org.vu.contest.ContestEvaluation;
+import java.util.Random;
 
 /**
  * Interface for a IPopulation of individuals.
@@ -21,7 +22,7 @@ public interface IPopulation {
     /**
      * Selects the parents used to create children
      */
-    void selectParents();
+    void selectParents(Random rnd_, Util.ParentSelection selection);
 
     /**
      * Selects the individuals that will survive in the next generation
