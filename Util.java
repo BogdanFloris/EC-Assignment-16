@@ -32,6 +32,11 @@ class Util {
         CORRELATED
     }
 
+    // The ratio of offspring to population size
+    final static double OFFSPRING_RATIO = 1.0;
+    // The number of individuals in the population
+    final static int POPULATION_SIZE = 100;
+
     Util() {
         tauSimple = 1 / Math.sqrt(DIMENSION);
         tauPrime = 1 / Math.sqrt(2 * DIMENSION);
