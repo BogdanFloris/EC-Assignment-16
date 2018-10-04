@@ -86,6 +86,10 @@ public class Population implements IPopulation {
                     break;
                 case WHOLE_ARITHMETIC:
                     childrenValues = wholeArithmeticRecombination(rnd_, parentsValues);
+                    break;
+                case BLEND:
+                    childrenValues = blendRecombination(rnd_, parentsValues);
+                    break;
                 default:
                     System.err.println("Invalid recombination");
             }
@@ -136,7 +140,6 @@ public class Population implements IPopulation {
     private void sampleParentSUS(Random rnd_) {
         // Assumes we wish to select offspringSize number of parents for the mating pool
         double[] cumulativeDistribution = new double[populationSize];
-        double r;
         // First we define the cumulative probability distribution of the parent selection probabilities
         for (int i = 0; i < populationSize; i++) {
             if (i == 0) {
@@ -148,7 +151,7 @@ public class Population implements IPopulation {
         int i = 0;
         int currentMember = 0;
         while (currentMember < matingpoolSize) {
-            r = rnd_.nextDouble() / offspringSize;
+            double r = rnd_.nextDouble() / offspringSize;
             while (r <= cumulativeDistribution[i]) {
                 matingpool.add(population[i]);
                 r += 1.0 / offspringSize;
@@ -186,10 +189,20 @@ public class Population implements IPopulation {
 
     private double[][] wholeArithmeticRecombination(Random rnd_, double[][] parentsValues) {
         double[][] childrenValues = new double[Util.N_PARENTS][Util.DIMENSION];
-        int k = rnd_.nextInt(Util.DIMENSION);
         for (int i = 0; i < Util.DIMENSION; i++) {
-            childrenValues[0][k] = Util.RECOMBINATION_ALPHA * parentsValues[0][k] + (1-Util.RECOMBINATION_ALPHA * parentsValues[1][k]);
-            childrenValues[1][k] = Util.RECOMBINATION_ALPHA * parentsValues[1][k] + (1-Util.RECOMBINATION_ALPHA * parentsValues[0][k]);
+            childrenValues[0][i] = Util.RECOMBINATION_ALPHA * parentsValues[0][i] + (1-Util.RECOMBINATION_ALPHA * parentsValues[1][i]);
+            childrenValues[1][i] = Util.RECOMBINATION_ALPHA * parentsValues[1][i] + (1-Util.RECOMBINATION_ALPHA * parentsValues[0][i]);
+        }
+        return childrenValues;
+    }
+
+    private double[][] blendRecombination(Random rnd_, double[][] parentsValues) {
+        double[][] childrenValues = new double[Util.N_PARENTS][Util.DIMENSION];
+        for (int i = 0; i < Util.DIMENSION; i++) {
+            double u = rnd_.nextDouble();
+            double gamma = (1 - 2 * Util.RECOMBINATION_ALPHA) * u - Util.RECOMBINATION_ALPHA;
+            childrenValues[0][i] = (1 - gamma) * parentsValues[0][i] + (gamma * parentsValues[1][i]);
+            childrenValues[1][i] = (1 - gamma) * parentsValues[1][i] + (gamma * parentsValues[0][i]);
         }
         return childrenValues;
     }
