@@ -68,7 +68,7 @@ public class Population implements IPopulation {
     @Override
     public void recombine(Random rnd_, Util.Recombination recombination) {
         double[][] parentsValues = new double[Util.N_PARENTS][Util.DIMENSION];
-        double[][] childrenValues;
+        double[][] childrenValues = new double[Util.N_PARENTS][Util.DIMENSION];
 
         for (int i = 0; i < offspringSize; i += Util.N_PARENTS) {
             for (int j = 0; j < Util.N_PARENTS; j++) {
@@ -84,7 +84,8 @@ public class Population implements IPopulation {
                 case SINGLE_ARITHMETIC:
                     childrenValues = simpleArithmeticRecombination(rnd_, parentsValues);
                     break;
-                System.err.println("Invalid recombination");
+                default:
+                    System.err.println("Invalid recombination");
             }
 
             for (int j = 0; j < Util.N_PARENTS; j++) {
