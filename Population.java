@@ -84,6 +84,8 @@ public class Population implements IPopulation {
                 case SINGLE_ARITHMETIC:
                     childrenValues = simpleArithmeticRecombination(rnd_, parentsValues);
                     break;
+                case WHOLE_ARITHMETIC:
+                    childrenValues = wholeArithmeticRecombination(rnd_, parentsValues);
                 default:
                     System.err.println("Invalid recombination");
             }
