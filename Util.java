@@ -46,8 +46,9 @@ class Util {
 
     // recombination options for parents
     enum Recombination {
-        DISCRETE,
-        ARITHMETIC,
+        SIMPLE_ARITHMETIC,
+        SINGLE_ARITHMETIC,
+        WHOLE_ARITHMETIC,
         BLEND
     }
 

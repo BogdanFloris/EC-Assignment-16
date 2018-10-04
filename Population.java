@@ -78,10 +78,13 @@ public class Population implements IPopulation {
             }
 
             switch (recombination) {
-                case DISCRETE:
-                    childrenValues = discreteRecombination(rnd_, parentsValues);
+                case SIMPLE_ARITHMETIC:
+                    childrenValues = singleArithmeticRecombination(rnd_, parentsValues);
                     break;
-                    System.err.println("Invalid recombination");
+                case SINGLE_ARITHMETIC:
+                    childrenValues = simpleArithmeticRecombination(rnd_, parentsValues);
+                    break;
+                System.err.println("Invalid recombination");
             }
 
             for (int j = 0; j < Util.N_PARENTS; j++) {
@@ -152,9 +155,29 @@ public class Population implements IPopulation {
         }
     }
 
-    private double[][] discreteRecombination(Random rnd_, double[][] parentsValues) {
+    private double[][] simpleArithmeticRecombination(Random rnd_, double[][] parentsValues) {
         double[][] childrenValues = new double[Util.N_PARENTS][Util.DIMENSION];
-        
+        int k = rnd_.nextInt(Util.DIMENSION);
+        for (int i = 0; i < k; i++) {
+            childrenValues[0][i] = parentsValues[0][i];
+            childrenValues[1][i] = parentsValues[1][i];
+        }
+        for (int i = k; i < Util.DIMENSION; i++) {
+            childrenValues[0][i] = 0.5 * (parentsValues[0][i] + parentsValues[1][i]);
+            childrenValues[1][i] = 0.5 * (parentsValues[0][i] + parentsValues[1][i]);
+        }
+        return childrenValues;
+    }
+
+    private double[][] singleArithmeticRecombination(Random rnd_, double[][] parentsValues) {
+        double[][] childrenValues = new double[Util.N_PARENTS][Util.DIMENSION];
+        int k = rnd_.nextInt(Util.DIMENSION);
+        for (int i = 0; i < Util.DIMENSION; i++) {
+            childrenValues[0][i] = parentsValues[0][i];
+            childrenValues[1][i] = parentsValues[1][i];
+        }
+        childrenValues[0][k] = 0.5 * (parentsValues[0][k] + parentsValues[1][k]);
+        childrenValues[1][k] = 0.5 * (parentsValues[0][k] + parentsValues[1][k]);
         return childrenValues;
     }
 }
