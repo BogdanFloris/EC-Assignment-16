@@ -1,5 +1,7 @@
 import org.vu.contest.ContestEvaluation;
 import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -11,8 +13,8 @@ public class Population implements IPopulation {
     private int offspringSize;
     private int matingpoolSize;
     private Individual[] population;
-    private Individual[] matingpool;
     private Individual[] offspring;
+    private List<Individual> matingpool;
 
     /**
      * Constructor with only a Random object
@@ -28,8 +30,8 @@ public class Population implements IPopulation {
         matingpoolSize = offspringSize;
 
         population = new Individual[this.populationSize];
-        matingpool = new Individual[offspringSize];
         offspring = new Individual[offspringSize];
+        matingpool = new ArrayList<Individual>();
 
         for (int i = 0; i < populationSize; i++) {
             population[i] = new Individual(rnd_);
@@ -61,6 +63,36 @@ public class Population implements IPopulation {
                 break;
         }
         sampleParentSUS(rnd_);
+    }
+
+    @Override
+    public void recombine(Random rnd_, Util.Recombination recombination) {
+        double[][] parentsValues = new double[Util.N_PARENTS][Util.DIMENSION];
+        double[][] childrenValues;
+
+        for (int i = 0; i < offspringSize; i += Util.N_PARENTS) {
+            for (int j = 0; j < Util.N_PARENTS; j++) {
+                int index = rnd_.nextInt(matingpoolSize);
+                parentsValues[j] = matingpool.get(index).values;
+                matingpool.remove(index);
+            }
+
+            switch (recombination) {
+                case DISCRETE:
+                    childrenValues = discreteRecombination(rnd_, parentsValues);
+                    break;
+                    System.err.println("Invalid recombination");
+            }
+
+            for (int j = 0; j < Util.N_PARENTS; j++) {
+                offspring[i+j] = (new Individual(childrenValues[j]));
+            }
+        }
+    }
+
+    @Override
+    public void selectSurvivors() {
+
     }
 
     /**
@@ -108,19 +140,21 @@ public class Population implements IPopulation {
             }
         }
         int i = 0;
-        for (int currentMember = 0; currentMember < matingpoolSize; currentMember++) {
+        int currentMember = 0;
+        while (currentMember < matingpoolSize) {
             r = rnd_.nextDouble() / offspringSize;
             while (r <= cumulativeDistribution[i]) {
-                matingpool[currentMember] = population[i];
+                matingpool.add(population[i]);
                 r += 1.0 / offspringSize;
             }
             i++;
+            currentMember++;
         }
-
     }
 
-    @Override
-    public void selectSurvivors() {
-
+    private double[][] discreteRecombination(Random rnd_, double[][] parentsValues) {
+        double[][] childrenValues = new double[Util.N_PARENTS][Util.DIMENSION];
+        
+        return childrenValues;
     }
 }

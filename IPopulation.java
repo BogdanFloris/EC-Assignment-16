@@ -25,6 +25,11 @@ public interface IPopulation {
     void selectParents(Random rnd_, Util.ParentSelection selection);
 
     /**
+     * Recombines parent genotype to create children
+     */
+    void recombine(Random rnd_, Util.Recombination recombination);
+
+    /**
      * Selects the individuals that will survive in the next generation
      */
     void selectSurvivors();

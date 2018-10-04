@@ -15,6 +15,10 @@ class Util {
     final static double MUTATION_RATE = 0.1;
     // The parameter s used in linear parent selection (P. 82)
     final static double PARENT_LINEAR_S = 2;
+    // The number of parents used for recombination
+    final static int N_PARENTS = 2;
+    // The number of crossover points used for recombination
+    final static int N_CROSSOVER = 1;
 
     // tauSimple
     static double tauSimple;
@@ -38,6 +42,13 @@ class Util {
     enum ParentSelection {
         LINEAR_RANK,
         EXPONENTIAL_RANK
+    }
+
+    // recombination options for parents
+    enum Recombination {
+        DISCRETE,
+        ARITHMETIC,
+        BLEND
     }
 
     // The ratio of offspring to population size
