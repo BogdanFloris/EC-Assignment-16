@@ -181,4 +181,14 @@ public class Population implements IPopulation {
         childrenValues[1][k] = 0.5 * (parentsValues[0][k] + parentsValues[1][k]);
         return childrenValues;
     }
+
+    private double[][] wholeArithmeticRecombination(Random rnd_, double[][] parentsValues) {
+        double[][] childrenValues = new double[Util.N_PARENTS][Util.DIMENSION];
+        int k = rnd_.nextInt(Util.DIMENSION);
+        for (int i = 0; i < Util.DIMENSION; i++) {
+            childrenValues[0][k] = Util.RECOMBINATION_ALPHA * parentsValues[0][k] + (1-Util.RECOMBINATION_ALPHA * parentsValues[1][k]);
+            childrenValues[1][k] = Util.RECOMBINATION_ALPHA * parentsValues[1][k] + (1-Util.RECOMBINATION_ALPHA * parentsValues[0][k]);
+        }
+        return childrenValues;
+    }
 }

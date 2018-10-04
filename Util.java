@@ -19,6 +19,8 @@ class Util {
     final static int N_PARENTS = 2;
     // The number of crossover points used for recombination
     final static int N_CROSSOVER = 1;
+    // Alpha parameter for the whole recombination
+    final static double RECOMBINATION_ALPHA = 0.3;
 
     // tauSimple
     static double tauSimple;
