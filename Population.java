@@ -9,12 +9,11 @@ import java.util.Random;
  */
 public class Population implements IPopulation {
     private int populationSize;
-    private double offspringRatio;
     private int offspringSize;
-    private int matingpoolSize;
+    private int matingPoolSize;
     private Individual[] population;
     private Individual[] offspring;
-    private List<Individual> matingpool;
+    private List<Individual> matingPool;
 
     /**
      * Constructor with only a Random object
@@ -24,14 +23,14 @@ public class Population implements IPopulation {
     public Population(Random rnd_) {
         populationSize = Util.POPULATION_SIZE;
 
-        offspringRatio = Util.OFFSPRING_RATIO;
+        double offspringRatio = Util.OFFSPRING_RATIO;
         offspringSize = (int) (populationSize * offspringRatio);
 
-        matingpoolSize = offspringSize;
+        matingPoolSize = offspringSize;
 
         population = new Individual[this.populationSize];
         offspring = new Individual[offspringSize];
-        matingpool = new ArrayList<Individual>();
+        matingPool = new ArrayList<Individual>();
 
         for (int i = 0; i < populationSize; i++) {
             population[i] = new Individual(rnd_);
@@ -72,9 +71,9 @@ public class Population implements IPopulation {
 
         for (int i = 0; i < offspringSize; i += Util.N_PARENTS) {
             for (int j = 0; j < Util.N_PARENTS; j++) {
-                int index = rnd_.nextInt(matingpoolSize);
-                parentsValues[j] = matingpool.get(index).values;
-                matingpool.remove(index);
+                int index = rnd_.nextInt(matingPoolSize);
+                parentsValues[j] = matingPool.get(index).values;
+                matingPool.remove(index);
             }
 
             switch (recombination) {
@@ -150,10 +149,10 @@ public class Population implements IPopulation {
         }
         int i = 0;
         int currentMember = 0;
-        while (currentMember < matingpoolSize) {
+        while (currentMember < matingPoolSize) {
             double r = rnd_.nextDouble() / offspringSize;
             while (r <= cumulativeDistribution[i]) {
-                matingpool.add(population[i]);
+                matingPool.add(population[i]);
                 r += 1.0 / offspringSize;
             }
             i++;
