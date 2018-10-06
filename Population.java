@@ -1,8 +1,9 @@
 import org.vu.contest.ContestEvaluation;
-import java.util.Arrays;
-import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Random;
+import java.util.ArrayList;
+import java.util.Comparator;
 
 /**
  * Main Population class
@@ -11,8 +12,8 @@ public class Population implements IPopulation {
     private int populationSize;
     private int offspringSize;
     private int matingPoolSize;
-    private Individual[] population;
-    private Individual[] offspring;
+    private List<Individual> population;
+    private List<Individual> offspring;
     private List<Individual> matingPool;
 
     /**
@@ -28,26 +29,26 @@ public class Population implements IPopulation {
 
         matingPoolSize = offspringSize;
 
-        population = new Individual[this.populationSize];
-        offspring = new Individual[offspringSize];
+        population = new ArrayList<>();
+        offspring = new ArrayList<>();
         matingPool = new ArrayList<>();
 
         for (int i = 0; i < populationSize; i++) {
-            population[i] = new Individual(rnd_);
+            population.add(new Individual(rnd_));
         }
     }
 
     @Override
     public void evalInitialPopulation(ContestEvaluation eval) {
         for (int i = 0; i < populationSize; i++) {
-            population[i].setFitness((double) eval.evaluate(population[i].values));
+            population.get(i).setFitness((double) eval.evaluate(population.get(i).values));
         }
     }
 
     @Override
     public void evalOffspring(ContestEvaluation eval) {
         for (int i = 0; i < offspringSize; i++) {
-            offspring[i].setFitness((double) eval.evaluate(offspring[i].values));
+            offspring.get(i).setFitness((double) eval.evaluate(offspring.get(i).values));
         }
     }
 
@@ -94,7 +95,7 @@ public class Population implements IPopulation {
             }
 
             for (int j = 0; j < Util.N_PARENTS; j++) {
-                offspring[i+j] = (new Individual(childrenValues[j]));
+                offspring.add(i + j, new Individual(childrenValues[j]));
             }
         }
     }
@@ -110,29 +111,29 @@ public class Population implements IPopulation {
      *
      */
     private void rankingSelectionLinear() {
-        Arrays.sort(population);
+        sortPopulation();
         int maxRank = populationSize - 1;
         double prob;
         double s = Util.PARENT_LINEAR_S;
         for (int i = 0; i < populationSize; i++) {
             prob = ((2 - s) / populationSize) + (2 * (maxRank - i) * (s - 1) / (populationSize * (populationSize - 1)));
-            population[i].setSelectionProbability(prob);
+            population.get(i).setSelectionProbability(prob);
         }
     }
 
     private void rankingSelectionExponential() {
-        Arrays.sort(population);
+        sortPopulation();
         int maxRank = populationSize - 1;
         double prob;
         double normalisation = 0.0;
         for (int i = 0; i < populationSize; i++) {
             prob = 1 - Math.exp(-maxRank + i);
-            population[i].setSelectionProbability(prob);
+            population.get(i).setSelectionProbability(prob);
             normalisation += prob;
         }
         // normalise the selection probabilities
         for (int i = 0; i < populationSize; i++) {
-            population[i].setSelectionProbability(population[i].getSelectionProbability() / normalisation);
+            population.get(i).setSelectionProbability(population.get(i).getSelectionProbability() / normalisation);
         }
     }
 
@@ -142,9 +143,9 @@ public class Population implements IPopulation {
         // First we define the cumulative probability distribution of the parent selection probabilities
         for (int i = 0; i < populationSize; i++) {
             if (i == 0) {
-                cumulativeDistribution[i] = population[i].getSelectionProbability();
+                cumulativeDistribution[i] = population.get(i).getSelectionProbability();
             } else {
-                cumulativeDistribution[i] = population[i].getSelectionProbability() + cumulativeDistribution[i-1];
+                cumulativeDistribution[i] = population.get(i).getSelectionProbability() + cumulativeDistribution[i-1];
             }
         }
         int i = 0;
@@ -152,13 +153,17 @@ public class Population implements IPopulation {
         while (currentMember < matingPoolSize) {
             double r = rnd_.nextDouble() / offspringSize;
             while (r <= cumulativeDistribution[i]) {
-                matingPool.add(population[i]);
+                matingPool.add(population.get(i));
                 r += 1.0 / offspringSize;
             }
             i++;
             currentMember++;
         }
     }
+
+    /* ***************************
+     * RECOMBINATION OPERATORS
+     *****************************/
 
     private double[][] simpleArithmeticRecombination(Random rnd_, double[][] parentsValues) {
         double[][] childrenValues = new double[Util.N_PARENTS][Util.DIMENSION];
@@ -206,5 +211,17 @@ public class Population implements IPopulation {
             childrenValues[1][i] = (1 - gamma) * parentsValues[1][i] + (gamma * parentsValues[0][i]);
         }
         return childrenValues;
+    }
+
+
+    /* ****************************
+     * AUXILIARY FUNCTIONS
+     ******************************/
+
+    /**
+     * Sorts the population
+     */
+    private void sortPopulation() {
+        population.sort(Comparator.comparingDouble(Individual::getFitness).reversed());
     }
 }
