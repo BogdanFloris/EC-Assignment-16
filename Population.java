@@ -30,7 +30,7 @@ public class Population implements IPopulation {
 
         population = new Individual[this.populationSize];
         offspring = new Individual[offspringSize];
-        matingPool = new ArrayList<Individual>();
+        matingPool = new ArrayList<>();
 
         for (int i = 0; i < populationSize; i++) {
             population[i] = new Individual(rnd_);
@@ -188,18 +188,20 @@ public class Population implements IPopulation {
 
     private double[][] wholeArithmeticRecombination(Random rnd_, double[][] parentsValues) {
         double[][] childrenValues = new double[Util.N_PARENTS][Util.DIMENSION];
+        double alpha = rnd_.nextDouble();
         for (int i = 0; i < Util.DIMENSION; i++) {
-            childrenValues[0][i] = Util.RECOMBINATION_ALPHA * parentsValues[0][i] + (1-Util.RECOMBINATION_ALPHA * parentsValues[1][i]);
-            childrenValues[1][i] = Util.RECOMBINATION_ALPHA * parentsValues[1][i] + (1-Util.RECOMBINATION_ALPHA * parentsValues[0][i]);
+            childrenValues[0][i] = alpha * parentsValues[0][i] + (1 - alpha * parentsValues[1][i]);
+            childrenValues[1][i] = alpha * parentsValues[1][i] + (1 - alpha * parentsValues[0][i]);
         }
         return childrenValues;
     }
 
     private double[][] blendRecombination(Random rnd_, double[][] parentsValues) {
         double[][] childrenValues = new double[Util.N_PARENTS][Util.DIMENSION];
+        double alpha = 0.5;
         for (int i = 0; i < Util.DIMENSION; i++) {
             double u = rnd_.nextDouble();
-            double gamma = (1 - 2 * Util.RECOMBINATION_ALPHA) * u - Util.RECOMBINATION_ALPHA;
+            double gamma = (1 - 2 * alpha) * u - alpha;
             childrenValues[0][i] = (1 - gamma) * parentsValues[0][i] + (gamma * parentsValues[1][i]);
             childrenValues[1][i] = (1 - gamma) * parentsValues[1][i] + (gamma * parentsValues[0][i]);
         }
