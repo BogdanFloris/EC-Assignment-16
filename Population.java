@@ -142,6 +142,7 @@ public class Population implements IPopulation {
         double[][] parentsValues = new double[Util.N_PARENTS][Util.DIMENSION];
         double[][] childrenValues = new double[Util.N_PARENTS][Util.DIMENSION];
 
+        offspring.clear();
         for (int i = 0; i < offspringSize; i += Util.N_PARENTS) {
             for (int j = 0; j < Util.N_PARENTS; j++) {
                 int index = rnd_.nextInt(matingPool.size());
@@ -167,7 +168,7 @@ public class Population implements IPopulation {
             }
 
             for (int j = 0; j < Util.N_PARENTS; j++) {
-                offspring.add(i + j, new Individual(childrenValues[j]));
+                offspring.add(new Individual(childrenValues[j]));
             }
         }
     }
