@@ -107,8 +107,6 @@ public class Population implements IPopulation {
 
     /**
      * Rank based selection
-     *
-     *
      */
     private void rankingSelectionLinear() {
         sortPopulation();
@@ -165,6 +163,13 @@ public class Population implements IPopulation {
      * RECOMBINATION OPERATORS
      *****************************/
 
+    /**
+     * Simple Arithmetic Recombination
+     *
+     * @param rnd_ the random generator
+     * @param parentsValues the values of the parents
+     * @return the values of the children
+     */
     private double[][] simpleArithmeticRecombination(Random rnd_, double[][] parentsValues) {
         double[][] childrenValues = new double[Util.N_PARENTS][Util.DIMENSION];
         int k = rnd_.nextInt(Util.DIMENSION);
@@ -179,6 +184,13 @@ public class Population implements IPopulation {
         return childrenValues;
     }
 
+    /**
+     * Single Arithmetic Recombination
+     *
+     * @param rnd_ the random generator
+     * @param parentsValues the values of the parents
+     * @return the values of the children
+     */
     private double[][] singleArithmeticRecombination(Random rnd_, double[][] parentsValues) {
         double[][] childrenValues = new double[Util.N_PARENTS][Util.DIMENSION];
         int k = rnd_.nextInt(Util.DIMENSION);
@@ -191,6 +203,13 @@ public class Population implements IPopulation {
         return childrenValues;
     }
 
+    /**
+     * Whole Arithmetic Recombination
+     *
+     * @param rnd_ the random generator
+     * @param parentsValues the values of the parents
+     * @return the values of the children
+     */
     private double[][] wholeArithmeticRecombination(Random rnd_, double[][] parentsValues) {
         double[][] childrenValues = new double[Util.N_PARENTS][Util.DIMENSION];
         double alpha = rnd_.nextDouble();
@@ -201,6 +220,13 @@ public class Population implements IPopulation {
         return childrenValues;
     }
 
+    /**
+     * Blend recombination page 67
+     *
+     * @param rnd_ the random generator
+     * @param parentsValues the values of the parents
+     * @return the values of the children
+     */
     private double[][] blendRecombination(Random rnd_, double[][] parentsValues) {
         double[][] childrenValues = new double[Util.N_PARENTS][Util.DIMENSION];
         double alpha = 0.5;
