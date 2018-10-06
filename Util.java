@@ -41,7 +41,8 @@ class Util {
     // parent selection options for a population
     enum ParentSelection {
         LINEAR_RANK,
-        EXPONENTIAL_RANK
+        EXPONENTIAL_RANK,
+        FPS
     }
 
     // recombination options for parents

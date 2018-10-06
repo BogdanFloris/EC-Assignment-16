@@ -68,17 +68,27 @@ public class Population implements IPopulation {
             case EXPONENTIAL_RANK:
                 rankingSelectionExponential();
                 break;
+            case FPS:
+                fitnessProportionalSelection();
+                break;
+            default:
+                System.err.println("Invalid parent selection mechanism");
         }
         sampleParentSUS(rnd_);
     }
 
-    @Override
-    public void selectSurvivors() {
-
+    private void fitnessProportionalSelection() {
+        double fitnessSum = 0.0;
+        for (Individual individual: population) {
+            fitnessSum += individual.getFitness();
+        }
+        for (Individual individual: population) {
+            individual.setSelectionProbability(individual.getFitness() / fitnessSum);
+        }
     }
 
     /**
-     * Rank based selection
+     * Linear ranking
      */
     private void rankingSelectionLinear() {
         sortPopulation();
@@ -86,11 +96,15 @@ public class Population implements IPopulation {
         double prob;
         double s = Util.PARENT_LINEAR_S;
         for (int i = 0; i < populationSize; i++) {
-            prob = ((2 - s) / populationSize) + (2 * (maxRank - i) * (s - 1) / (populationSize * (populationSize - 1)));
+            prob = ((2 - s) / populationSize) + (2 * (maxRank - i) * (s - 1) /
+                    (populationSize * (populationSize - 1)));
             population.get(i).setSelectionProbability(prob);
         }
     }
 
+    /**
+     * Exponential ranking
+     */
     private void rankingSelectionExponential() {
         sortPopulation();
         int maxRank = populationSize - 1;
@@ -103,7 +117,8 @@ public class Population implements IPopulation {
         }
         // normalise the selection probabilities
         for (int i = 0; i < populationSize; i++) {
-            population.get(i).setSelectionProbability(population.get(i).getSelectionProbability() / normalisation);
+            population.get(i).setSelectionProbability(
+                    population.get(i).getSelectionProbability() / normalisation);
         }
     }
 
@@ -115,7 +130,8 @@ public class Population implements IPopulation {
             if (i == 0) {
                 cumulativeDistribution[i] = population.get(i).getSelectionProbability();
             } else {
-                cumulativeDistribution[i] = population.get(i).getSelectionProbability() + cumulativeDistribution[i-1];
+                cumulativeDistribution[i] = population.get(i).
+                        getSelectionProbability() + cumulativeDistribution[i-1];
             }
         }
         int i = 0;
@@ -129,6 +145,14 @@ public class Population implements IPopulation {
             i++;
             currentMember++;
         }
+    }
+    /* ****************************
+     * SURVIVOR SELECTION
+     ******************************/
+
+    @Override
+    public void selectSurvivors() {
+
     }
 
     /* ***************************
