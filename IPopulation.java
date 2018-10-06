@@ -22,12 +22,12 @@ public interface IPopulation {
     /**
      * Selects the parents used to create children
      */
-    void selectParents(Random rnd_, Util.ParentSelection selection);
+    void selectParents(Random rnd_);
 
     /**
      * Recombines parent genotype to create children
      */
-    void recombine(Random rnd_, Util.Recombination recombination);
+    void recombine(Random rnd_);
 
 
     /**

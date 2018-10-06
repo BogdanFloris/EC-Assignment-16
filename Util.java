@@ -29,9 +29,10 @@ class Util {
     // epsilon
     static double epsilon;
 
-    public static Mutation mutation = Mutation.CORRELATED;
-    public static ParentSelection parentSelection = ParentSelection.EXPONENTIAL_RANK;
-    public static Recombination recombination = Recombination.BLEND;
+    static Mutation mutation = Mutation.CORRELATED;
+    static ParentSelection parentSelection = ParentSelection.EXPONENTIAL_RANK;
+    static Recombination recombination = Recombination.BLEND;
+    static SurvivorSelection survivorSelection = SurvivorSelection.MU_PLUS_LAMBDA;
 
     // mutation options for an individual
     enum Mutation {
@@ -55,6 +56,13 @@ class Util {
         SINGLE_ARITHMETIC,
         WHOLE_ARITHMETIC,
         BLEND
+    }
+
+    // survivor selection options
+    enum SurvivorSelection {
+        GENERATIONAL,
+        MU_PLUS_LAMBDA,
+        TOURNAMENT
     }
 
     // The ratio of offspring to population size

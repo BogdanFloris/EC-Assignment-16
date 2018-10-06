@@ -57,8 +57,8 @@ public class Population implements IPopulation {
      *********************/
 
     @Override
-    public void selectParents(Random rnd_, Util.ParentSelection selection) {
-        switch (selection) {
+    public void selectParents(Random rnd_) {
+        switch (Util.parentSelection) {
             case LINEAR_RANK:
                 rankingSelectionLinear();
                 break;
@@ -68,8 +68,6 @@ public class Population implements IPopulation {
             case FPS:
                 fitnessProportionalSelection();
                 break;
-            default:
-                System.err.println("Invalid parent selection mechanism");
         }
         sampleParentSUS(rnd_);
     }
@@ -138,7 +136,7 @@ public class Population implements IPopulation {
      ******************************/
 
     @Override
-    public void recombine(Random rnd_, Util.Recombination recombination) {
+    public void recombine(Random rnd_) {
         double[][] parentsValues = new double[Util.N_PARENTS][Util.DIMENSION];
         double[][] childrenValues = new double[Util.N_PARENTS][Util.DIMENSION];
 
@@ -150,7 +148,7 @@ public class Population implements IPopulation {
                 matingPool.remove(index);
             }
 
-            switch (recombination) {
+            switch (Util.recombination) {
                 case SIMPLE_ARITHMETIC:
                     childrenValues = singleArithmeticRecombination(rnd_, parentsValues);
                     break;
@@ -163,8 +161,6 @@ public class Population implements IPopulation {
                 case BLEND:
                     childrenValues = blendRecombination(rnd_, parentsValues);
                     break;
-                default:
-                    System.err.println("Invalid recombination");
             }
 
             for (int j = 0; j < Util.N_PARENTS; j++) {
@@ -265,7 +261,14 @@ public class Population implements IPopulation {
 
     @Override
     public void selectSurvivors() {
-
+        switch (Util.survivorSelection) {
+            case GENERATIONAL:
+                break;
+            case MU_PLUS_LAMBDA:
+                break;
+            case TOURNAMENT:
+                break;
+        }
     }
 
     /* ****************************
