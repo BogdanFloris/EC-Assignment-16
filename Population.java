@@ -38,19 +38,26 @@ public class Population implements IPopulation {
         }
     }
 
+    /* *******************
+     * EVALUATIONS
+     *********************/
     @Override
     public void evalInitialPopulation(ContestEvaluation eval) {
-        for (int i = 0; i < populationSize; i++) {
-            population.get(i).setFitness((double) eval.evaluate(population.get(i).values));
+        for (Individual individual: population) {
+            individual.setFitness((double) eval.evaluate(individual.values));
         }
     }
 
     @Override
     public void evalOffspring(ContestEvaluation eval) {
-        for (int i = 0; i < offspringSize; i++) {
-            offspring.get(i).setFitness((double) eval.evaluate(offspring.get(i).values));
+        for (Individual individual: offspring) {
+            individual.setFitness((double) eval.evaluate(individual.values));
         }
     }
+
+    /* *******************
+     * PARENT SELECTION
+     *********************/
 
     @Override
     public void selectParents(Random rnd_, Util.ParentSelection selection) {
@@ -63,41 +70,6 @@ public class Population implements IPopulation {
                 break;
         }
         sampleParentSUS(rnd_);
-    }
-
-    @Override
-    public void recombine(Random rnd_, Util.Recombination recombination) {
-        double[][] parentsValues = new double[Util.N_PARENTS][Util.DIMENSION];
-        double[][] childrenValues = new double[Util.N_PARENTS][Util.DIMENSION];
-
-        for (int i = 0; i < offspringSize; i += Util.N_PARENTS) {
-            for (int j = 0; j < Util.N_PARENTS; j++) {
-                int index = rnd_.nextInt(matingPoolSize);
-                parentsValues[j] = matingPool.get(index).values;
-                matingPool.remove(index);
-            }
-
-            switch (recombination) {
-                case SIMPLE_ARITHMETIC:
-                    childrenValues = singleArithmeticRecombination(rnd_, parentsValues);
-                    break;
-                case SINGLE_ARITHMETIC:
-                    childrenValues = simpleArithmeticRecombination(rnd_, parentsValues);
-                    break;
-                case WHOLE_ARITHMETIC:
-                    childrenValues = wholeArithmeticRecombination(rnd_, parentsValues);
-                    break;
-                case BLEND:
-                    childrenValues = blendRecombination(rnd_, parentsValues);
-                    break;
-                default:
-                    System.err.println("Invalid recombination");
-            }
-
-            for (int j = 0; j < Util.N_PARENTS; j++) {
-                offspring.add(i + j, new Individual(childrenValues[j]));
-            }
-        }
     }
 
     @Override
@@ -160,8 +132,43 @@ public class Population implements IPopulation {
     }
 
     /* ***************************
-     * RECOMBINATION OPERATORS
+     * RECOMBINATION
      *****************************/
+
+    @Override
+    public void recombine(Random rnd_, Util.Recombination recombination) {
+        double[][] parentsValues = new double[Util.N_PARENTS][Util.DIMENSION];
+        double[][] childrenValues = new double[Util.N_PARENTS][Util.DIMENSION];
+
+        for (int i = 0; i < offspringSize; i += Util.N_PARENTS) {
+            for (int j = 0; j < Util.N_PARENTS; j++) {
+                int index = rnd_.nextInt(matingPoolSize);
+                parentsValues[j] = matingPool.get(index).values;
+                matingPool.remove(index);
+            }
+
+            switch (recombination) {
+                case SIMPLE_ARITHMETIC:
+                    childrenValues = singleArithmeticRecombination(rnd_, parentsValues);
+                    break;
+                case SINGLE_ARITHMETIC:
+                    childrenValues = simpleArithmeticRecombination(rnd_, parentsValues);
+                    break;
+                case WHOLE_ARITHMETIC:
+                    childrenValues = wholeArithmeticRecombination(rnd_, parentsValues);
+                    break;
+                case BLEND:
+                    childrenValues = blendRecombination(rnd_, parentsValues);
+                    break;
+                default:
+                    System.err.println("Invalid recombination");
+            }
+
+            for (int j = 0; j < Util.N_PARENTS; j++) {
+                offspring.add(i + j, new Individual(childrenValues[j]));
+            }
+        }
+    }
 
     /**
      * Simple Arithmetic Recombination
