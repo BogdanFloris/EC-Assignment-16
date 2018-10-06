@@ -29,6 +29,12 @@ public interface IPopulation {
      */
     void recombine(Random rnd_, Util.Recombination recombination);
 
+
+    /**
+     * Mutates
+     */
+    void mutate(Random rnd_, double epsilon);
+
     /**
      * Selects the individuals that will survive in the next generation
      */

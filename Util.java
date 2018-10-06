@@ -29,6 +29,10 @@ class Util {
     // epsilon
     static double epsilon;
 
+    public static Mutation mutation = Mutation.CORRELATED;
+    public static ParentSelection parentSelection = ParentSelection.EXPONENTIAL_RANK;
+    public static Recombination recombination = Recombination.BLEND;
+
     // mutation options for an individual
     enum Mutation {
         UNIFORM,

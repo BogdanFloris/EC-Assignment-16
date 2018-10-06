@@ -11,7 +11,6 @@ import java.util.Comparator;
 public class Population implements IPopulation {
     private int populationSize;
     private int offspringSize;
-    private int matingPoolSize;
     private List<Individual> population;
     private List<Individual> offspring;
     private List<Individual> matingPool;
@@ -26,8 +25,6 @@ public class Population implements IPopulation {
 
         double offspringRatio = Util.OFFSPRING_RATIO;
         offspringSize = (int) (populationSize * offspringRatio);
-
-        matingPoolSize = offspringSize;
 
         population = new ArrayList<>();
         offspring = new ArrayList<>();
@@ -123,41 +120,22 @@ public class Population implements IPopulation {
     }
 
     private void sampleParentSUS(Random rnd_) {
-        // Assumes we wish to select offspringSize number of parents for the mating pool
-        double[] cumulativeDistribution = new double[populationSize];
-        // First we define the cumulative probability distribution of the parent selection probabilities
-        for (int i = 0; i < populationSize; i++) {
-            if (i == 0) {
-                cumulativeDistribution[i] = population.get(i).getSelectionProbability();
-            } else {
-                cumulativeDistribution[i] = population.get(i).
-                        getSelectionProbability() + cumulativeDistribution[i-1];
-            }
-        }
+        double r = rnd_.nextDouble() / (double) offspringSize;
         int i = 0;
-        int currentMember = 0;
-        while (currentMember < matingPoolSize) {
-            double r = rnd_.nextDouble() / offspringSize;
-            while (r <= cumulativeDistribution[i]) {
+        double cumulativeProb = 0.0;
+        while (matingPool.size() < offspringSize) {
+            cumulativeProb += population.get(i).getSelectionProbability();
+            while (r <= cumulativeProb) {
                 matingPool.add(population.get(i));
-                r += 1.0 / offspringSize;
+                r += 1 / (double) offspringSize;
             }
             i++;
-            currentMember++;
         }
     }
+
     /* ****************************
-     * SURVIVOR SELECTION
-     ******************************/
-
-    @Override
-    public void selectSurvivors() {
-
-    }
-
-    /* ***************************
      * RECOMBINATION
-     *****************************/
+     ******************************/
 
     @Override
     public void recombine(Random rnd_, Util.Recombination recombination) {
@@ -166,7 +144,7 @@ public class Population implements IPopulation {
 
         for (int i = 0; i < offspringSize; i += Util.N_PARENTS) {
             for (int j = 0; j < Util.N_PARENTS; j++) {
-                int index = rnd_.nextInt(matingPoolSize);
+                int index = rnd_.nextInt(matingPool.size());
                 parentsValues[j] = matingPool.get(index).values;
                 matingPool.remove(index);
             }
@@ -270,6 +248,24 @@ public class Population implements IPopulation {
         return childrenValues;
     }
 
+    /* ****************************
+     * MUTATION
+     ******************************/
+    public void mutate(Random rnd_, double epsilon)
+    {
+        for (Individual child: offspring) {
+            child.mutate(Util.mutation, rnd_, epsilon);
+        }
+    }
+
+    /* ****************************
+     * SURVIVOR SELECTION
+     ******************************/
+
+    @Override
+    public void selectSurvivors() {
+
+    }
 
     /* ****************************
      * AUXILIARY FUNCTIONS
@@ -279,6 +275,6 @@ public class Population implements IPopulation {
      * Sorts the population
      */
     private void sortPopulation() {
-        population.sort(Comparator.comparingDouble(Individual::getFitness).reversed());
+        population.sort(Comparator.comparingDouble(Individual::getFitness));
     }
 }
