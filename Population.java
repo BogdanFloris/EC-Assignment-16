@@ -263,12 +263,32 @@ public class Population implements IPopulation {
     public void selectSurvivors() {
         switch (Util.survivorSelection) {
             case GENERATIONAL:
+                generational();
                 break;
             case MU_PLUS_LAMBDA:
+                muPlusLambda();
                 break;
             case TOURNAMENT:
                 break;
         }
+    }
+
+    /**
+     * Replaces all parents with the children.
+     */
+    private void generational() {
+        population.clear();
+        population.addAll(offspring);
+        offspring.clear();
+    }
+
+    /**
+     * Merges parents with children and keeps the best @{populationSize}.
+     */
+    private void muPlusLambda() {
+        population.addAll(offspring);
+        sortPopulationReverse();
+        population.subList(populationSize, populationSize + offspringSize).clear();
     }
 
     /* ****************************
@@ -280,5 +300,12 @@ public class Population implements IPopulation {
      */
     private void sortPopulation() {
         population.sort(Comparator.comparingDouble(Individual::getFitness));
+    }
+
+    /**
+     * Sorts the population and reverses it.
+     */
+    private void sortPopulationReverse() {
+        population.sort(Comparator.comparingDouble(Individual::getFitness).reversed());
     }
 }
