@@ -60,6 +60,7 @@ public class player16 implements ContestSubmission {
             // Apply crossover / mutation operators
             population.recombine(rnd_);
             population.mutate(rnd_, Util.epsilon);
+            population.evalOffspring(evaluation_);
             // Select survivors
             population.selectSurvivors();
 
