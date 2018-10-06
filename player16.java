@@ -50,29 +50,22 @@ public class player16 implements ContestSubmission {
 
         int evals = 0;
         // init population
-        Individual parent = new Individual(this.rnd_);
-        Individual child;
+        Population population = new Population(rnd_);
         // calculate fitness
-        parent.setFitness((double) evaluation_.evaluate(parent.values));
+        population.evalInitialPopulation(evaluation_);
         // loop
         while (evals < evaluations_limit_) {
             // Select parents
+            population.selectParents(rnd_);
             // Apply crossover / mutation operators
-            // inherit from parent
-            child = new Individual(parent.values);
-            // mutate the child
-            child.mutate(Util.mutation, this.rnd_, Util.epsilon);
-            // Check fitness of unknown function
-            child.setFitness((double) evaluation_.evaluate(child.values));
-            evals++;
+            population.recombine(rnd_);
+            population.mutate(rnd_, Util.epsilon);
             // Select survivors
-            if (child.getFitness() > parent.getFitness()) {
-                // Select the individual with the highest fitness
-                parent = child;
-                System.out.println(evals + "parent: " + Arrays.toString(parent.values));
-            }
+            population.selectSurvivors();
+
+            // Increment evaluations
+            evals++;
+            population.printFitness();
         }
-        // Display the values of the current parent
-        System.out.println(evals + "parent: " + Arrays.toString(parent.values));
     }
 }

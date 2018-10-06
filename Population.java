@@ -308,4 +308,21 @@ public class Population implements IPopulation {
     private void sortPopulationReverse() {
         population.sort(Comparator.comparingDouble(Individual::getFitness).reversed());
     }
+
+    public void printFitness()
+    {
+        int i = 0;
+        StringBuilder s = new StringBuilder();
+        s.append("[");
+        for (Individual ind: population) {
+            s.append(ind.getFitness());
+            s.append(", ");
+            i++;
+            if (i % 8 == 0) {
+                s.append("\n");
+            }
+        }
+        s.append("]\n");
+        System.out.print(s.toString());
+    }
 }

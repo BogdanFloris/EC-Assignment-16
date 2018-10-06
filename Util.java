@@ -17,8 +17,6 @@ class Util {
     final static double PARENT_LINEAR_S = 2;
     // The number of parents used for recombination
     final static int N_PARENTS = 2;
-    // The number of crossover points used for recombination
-    final static int N_CROSSOVER = 1;
 
     // tauSimple
     static double tauSimple;
