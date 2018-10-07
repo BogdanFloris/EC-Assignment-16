@@ -48,24 +48,28 @@ public class player16 implements ContestSubmission {
     public void run() {
         // Run your algorithm here
 
-        int evals = 0;
+        int evaluations = evaluations_limit_;
         // init population
         Population population = new Population(rnd_);
         // calculate fitness
-        population.evalInitialPopulation(evaluation_);
+        evaluations -= population.evalInitialPopulation(evaluation_);
         // loop
-        while (evals < evaluations_limit_) {
+        while (evaluations > 0) {
             // Select parents
             population.selectParents(rnd_);
             // Apply crossover / mutation operators
             population.recombine(rnd_);
             population.mutate(rnd_, Util.epsilon);
-            population.evalOffspring(evaluation_);
+
+            try {
+                evaluations -= population.evalOffspring(evaluation_);
+            }
+            catch (NullPointerException e) {
+                System.out.println("\033[1mEvaluation limit reached!\033[0m");
+                break;
+            }
             // Select survivors
             population.selectSurvivors();
-
-            // Increment evaluations
-            evals++;
             population.printFitness();
         }
     }

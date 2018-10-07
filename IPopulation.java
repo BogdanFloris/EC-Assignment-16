@@ -11,13 +11,18 @@ public interface IPopulation {
      *
      * @param eval the ContestEvaluation
      *             needed to evaluate the individuals
+     * @return the number of evaluations used
      */
-    void evalInitialPopulation(ContestEvaluation eval);
+    int evalInitialPopulation(ContestEvaluation eval);
 
     /**
      * Evaluates the newly created offspring
+     *
+     * @param eval the ContestEvaluation
+     *             needed to evaluate the individuals
+     * @return the number of evaluations used
      */
-    void evalOffspring(ContestEvaluation eval);
+    int evalOffspring(ContestEvaluation eval);
 
     /**
      * Selects the parents used to create children

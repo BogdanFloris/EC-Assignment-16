@@ -39,17 +39,23 @@ public class Population implements IPopulation {
      * EVALUATIONS
      *********************/
     @Override
-    public void evalInitialPopulation(ContestEvaluation eval) {
+    public int evalInitialPopulation(ContestEvaluation eval) {
+        int evaluations = 0;
         for (Individual individual: population) {
             individual.setFitness((double) eval.evaluate(individual.values));
+            evaluations++;
         }
+        return evaluations;
     }
 
     @Override
-    public void evalOffspring(ContestEvaluation eval) {
+    public int evalOffspring(ContestEvaluation eval) {
+        int evaluations = 0;
         for (Individual individual: offspring) {
             individual.setFitness((double) eval.evaluate(individual.values));
+            evaluations++;
         }
+        return evaluations;
     }
 
     /* *******************
