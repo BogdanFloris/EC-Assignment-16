@@ -45,11 +45,8 @@ class Individual {
      * @param values the values inherited
      */
     Individual(double[] values) {
-        this.values = new double[Util.DIMENSION];
+        this.values = values.clone();
         this.fitness = 0.0;
-        for (int i = 0; i < this.values.length; i++) {
-            this.values[i] = values[i];
-        }
         this.sigmas = new double[Util.DIMENSION];
         for (int i = 0; i < this.sigmas.length; i++) {
             this.sigmas[i] = sigma;
