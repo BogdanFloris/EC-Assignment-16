@@ -157,24 +157,26 @@ public class Population implements IPopulation {
                 matingPool.remove(index);
             }
 
-            switch (Util.recombination) {
-                case SIMPLE_ARITHMETIC:
-                    childrenValues = singleArithmeticRecombination(rnd_, parentsValues);
-                    break;
-                case SINGLE_ARITHMETIC:
-                    childrenValues = simpleArithmeticRecombination(rnd_, parentsValues);
-                    break;
-                case WHOLE_ARITHMETIC:
-                    childrenValues = wholeArithmeticRecombination(rnd_, parentsValues);
-                    break;
-                case BLEND:
-                    childrenValues = blendRecombination(rnd_, parentsValues);
-                    break;
-            }
+            childrenValues = chooseRecombination(rnd_, parentsValues);
 
             for (int j = 0; j < Util.N_PARENTS; j++) {
                 offspring.add(new Individual(childrenValues[j]));
             }
+        }
+    }
+
+    private double[][] chooseRecombination(Random rnd_, double[][] parentsValues) {
+        switch (Util.recombination) {
+            case SIMPLE_ARITHMETIC:
+                return singleArithmeticRecombination(rnd_, parentsValues);
+            case SINGLE_ARITHMETIC:
+                return simpleArithmeticRecombination(rnd_, parentsValues);
+            case WHOLE_ARITHMETIC:
+                return wholeArithmeticRecombination(rnd_, parentsValues);
+            case BLEND:
+                return blendRecombination(rnd_, parentsValues);
+            default:
+                return null;
         }
     }
 
@@ -243,7 +245,6 @@ public class Population implements IPopulation {
      * @return the values of the children
      */
     private double[][] blendRecombination(Random rnd_, double[][] parentsValues) {
-        // TODO: verify this method
         double[][] childrenValues = new double[Util.N_PARENTS][Util.DIMENSION];
         double alpha = 0.5;
         for (int i = 0; i < Util.DIMENSION; i++) {
