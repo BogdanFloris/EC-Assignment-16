@@ -11,14 +11,15 @@ public class Population implements IPopulation {
     private List<Individual> population;
     private List<Individual> offspring;
     private List<Individual> matingPool;
+    private List<Individual> exchange;
 
     /**
      * Constructor with only a Random object
      *
      * @param rnd_ Random class to be used
      */
-    public Population(Random rnd_) {
-        populationSize = Util.POPULATION_SIZE;
+    public Population(Random rnd_, int populationSize) {
+        this.populationSize = populationSize;
 
         double offspringRatio = Util.OFFSPRING_RATIO;
         offspringSize = (int) (populationSize * offspringRatio);
@@ -65,14 +66,14 @@ public class Population implements IPopulation {
             fitnessSharing();
         }
         switch (Util.parentSelection) {
+            case FPS:
+                fitnessProportionalSelection();
+                break;
             case LINEAR_RANK:
                 rankingSelectionLinear();
                 break;
             case EXPONENTIAL_RANK:
                 rankingSelectionExponential();
-                break;
-            case FPS:
-                fitnessProportionalSelection();
                 break;
         }
         sampleParentSUS(rnd_);
@@ -123,10 +124,13 @@ public class Population implements IPopulation {
         }
     }
 
+    /**
+     * Stochastic Universal Sampling
+     */
     private void sampleParentSUS(Random rnd_) {
         double r = rnd_.nextDouble() / (double) offspringSize;
-        int i = 0;
         double cumulativeProb = 0.0;
+        int i = 0;
         while (matingPool.size() < offspringSize) {
             cumulativeProb += population.get(i).getSelectionProbability();
             while (r <= cumulativeProb) {
@@ -374,6 +378,67 @@ public class Population implements IPopulation {
         }
     }
 
+    /* ****************************
+     * ISLAND MODEL FUNCTIONS
+     ******************************/
+
+    /**
+     * Selects the best N individuals from the population.
+     *
+     * @param n the amount of individuals
+     */
+    void bestNIndividuals(int n) {
+        exchange = new ArrayList<>();
+        sortPopulationReverse();
+        for (int i = 0; i < n; i++) {
+            exchange.add(population.get(i));
+        }
+    }
+
+    /**
+     * Selects N random individuals from the population.
+     *
+     * @param n the amount of individuals
+     * @param rnd_ randomizer
+     */
+    void randomNIndividuals(int n, Random rnd_) {
+        exchange = new ArrayList<>();
+        sortPopulationReverse();
+        for (int i = 0; i < n; i++) {
+            int index = rnd_.nextInt(populationSize);
+            exchange.add(population.get(index));
+        }
+    }
+
+    /**
+     * Returns a copy of the individuals to be exchanged
+     *
+     * @return the copied exchange list
+     */
+    List<Individual> getExchange() {
+        return new ArrayList<>(this.exchange);
+    }
+
+    /**
+     * Adds the list of individuals to the population.
+     *
+     * @param toAdd list of individuals
+     */
+    void addToPopulation(List<Individual> toAdd) {
+        population.addAll(toAdd);
+    }
+
+    /**
+     * Removes the worst n individuals from the population.
+     *
+     * @param n the number of individuals
+     */
+    void removeWorst(int n)
+    {
+        sortPopulationReverse();
+        population.subList(populationSize - n, populationSize).clear();
+    }
+
 
     /* ****************************
      * AUXILIARY FUNCTIONS
@@ -423,5 +488,10 @@ public class Population implements IPopulation {
         }
         s.append("]\n");
         System.out.print(s.toString());
+    }
+
+    @Override
+    public void makeExchangeRingModel() {
+        throw new UnsupportedOperationException();
     }
 }

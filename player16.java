@@ -50,11 +50,27 @@ public class player16 implements ContestSubmission {
 
         int evaluations = evaluations_limit_;
         // init population
-        Population population = new Population(rnd_);
+        IPopulation population;
+        if (Util.ISLAND_MODEL) {
+            population = new IslandModel(rnd_, Util.POPULATION_SIZE);
+        }
+        else {
+            population = new Population(rnd_, Util.POPULATION_SIZE);
+        }
         // calculate fitness
         evaluations -= population.evalInitialPopulation(evaluation_);
+        // generation counter
+        int generation = 0;
         // loop
         while (evaluations > 0) {
+            if (Util.ISLAND_MODEL && generation % Util.EPOCH == 0) {
+                try {
+                    population.makeExchangeRingModel();
+                }
+                catch (UnsupportedOperationException e) {
+                    System.err.println("Not Island Model");
+                }
+            }
             // Select parents
             population.selectParents(rnd_);
             // Apply crossover / mutation operators
@@ -70,7 +86,8 @@ public class player16 implements ContestSubmission {
             }
             // Select survivors
             population.selectSurvivors();
-            population.printFitness();
+            // population.printFitness();
+            generation++;
         }
     }
 }

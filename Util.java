@@ -11,8 +11,6 @@ class Util {
     final static double MAX_VALUE = 5.0;
     // The step size of the mutation / standard deviation used for nextGaussian
     final static double MUTATION_STEP_SIZE = 0.25;
-    // The mutation rate used in the uniform mutation to determine which genotypes are changed
-    final static double MUTATION_RATE = 0.1;
     // The parameter s used in linear parent selection (P. 82)
     final static double PARENT_LINEAR_S = 2;
     // The number of parents used for recombination
@@ -37,6 +35,8 @@ class Util {
     static boolean FITNESS_SHARING = false;
     // use deterministic crowding or not
     static boolean DETERMINISTIC_CROWDING = false;
+    // use island model
+    static boolean ISLAND_MODEL = false;
 
     // mutation options for an individual
     enum Mutation {
@@ -70,14 +70,20 @@ class Util {
     }
 
     // The ratio of offspring to population size
-    final static double OFFSPRING_RATIO = 2.0;
+    final static double OFFSPRING_RATIO = 1.0;
     // The number of individuals in the population
-    final static int POPULATION_SIZE = 5;
+    final static int POPULATION_SIZE = 50;
+    // Number of populations in island model
+    final static int N_POPULATIONS = 5;
+    // epoch (for exchange)
+    final static int EPOCH = 50;
+    // number of exchanged individuals
+    final static int N_EXCHANGED = 2;
 
     Util() {
         tauSimple = 1 / Math.sqrt(DIMENSION);
         tauPrime = 1 / Math.sqrt(2 * DIMENSION);
         tau = 1 / Math.sqrt(2 * Math.sqrt(DIMENSION));
-        epsilon = 0.01;
+        epsilon = 0.1;
     }
 }

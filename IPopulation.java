@@ -44,4 +44,11 @@ public interface IPopulation {
      * Selects the individuals that will survive in the next generation
      */
     void selectSurvivors();
+
+    /**
+     * Prints the fitness of the population
+     */
+    void printFitness();
+
+    void makeExchangeRingModel();
 }
