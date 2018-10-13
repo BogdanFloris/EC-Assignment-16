@@ -147,7 +147,7 @@ public class Population implements IPopulation {
     @Override
     public void recombine(Random rnd_) {
         double[][] parentsValues = new double[Util.N_PARENTS][Util.DIMENSION];
-        double[][] childrenValues = new double[Util.N_PARENTS][Util.DIMENSION];
+        double[][] childrenValues;
 
         offspring.clear();
         for (int i = 0; i < offspringSize; i += Util.N_PARENTS) {
@@ -157,10 +157,17 @@ public class Population implements IPopulation {
                 matingPool.remove(index);
             }
 
-            childrenValues = chooseRecombination(rnd_, parentsValues);
+            try {
+                childrenValues = chooseRecombination(rnd_, parentsValues);
+            }
+            catch (NullPointerException e) {
+                throw new NullPointerException("Invalid recombination");
+            }
 
             for (int j = 0; j < Util.N_PARENTS; j++) {
-                offspring.add(new Individual(childrenValues[j]));
+                if (childrenValues != null) {
+                    offspring.add(new Individual(childrenValues[j]));
+                }
             }
         }
     }

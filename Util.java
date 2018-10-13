@@ -21,6 +21,8 @@ class Util {
     final static double SIGMA_SHARE = 5.0;
     // use fitness sharing or not
     final static boolean FITNESS_SHARING = false;
+    // use deterministic crowding or not
+    final static boolean DETERMINISTIC_CROWDING = true;
 
     // tauSimple
     static double tauSimple;
