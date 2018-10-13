@@ -63,14 +63,14 @@ public class player16 implements ContestSubmission {
         int generation = 0;
         // loop
         while (evaluations > 0) {
-            if (Util.ISLAND_MODEL && generation % Util.EPOCH == 0) {
-                try {
-                    population.makeExchangeRingModel();
-                }
-                catch (UnsupportedOperationException e) {
-                    System.err.println("Not Island Model");
-                }
-            }
+//            if (Util.ISLAND_MODEL && generation % Util.EPOCH == 0) {
+//                try {
+//                    population.makeExchangeRingModel();
+//                }
+//                catch (UnsupportedOperationException e) {
+//                    System.err.println("Not Island Model");
+//                }
+//            }
             // Select parents
             population.selectParents(rnd_);
             // Apply crossover / mutation operators

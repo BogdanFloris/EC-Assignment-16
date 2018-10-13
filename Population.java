@@ -66,6 +66,8 @@ public class Population implements IPopulation {
             fitnessSharing();
         }
         switch (Util.parentSelection) {
+            case UNIFORM:
+                uniformParentSelection();
             case FPS:
                 fitnessProportionalSelection();
                 break;
@@ -77,6 +79,12 @@ public class Population implements IPopulation {
                 break;
         }
         sampleParentSUS(rnd_);
+    }
+
+    private void uniformParentSelection() {
+        for (Individual individual: population) {
+            individual.setSelectionProbability(1.0 / populationSize);
+        }
     }
 
     private void fitnessProportionalSelection() {
@@ -94,11 +102,10 @@ public class Population implements IPopulation {
      */
     private void rankingSelectionLinear() {
         sortPopulation();
-        int maxRank = populationSize - 1;
         double prob;
         double s = Util.PARENT_LINEAR_S;
         for (int i = 0; i < populationSize; i++) {
-            prob = ((2 - s) / populationSize) + (2 * (maxRank - i) * (s - 1) /
+            prob = ((2 - s) / populationSize) + (2 * i * (s - 1) /
                     (populationSize * (populationSize - 1)));
             population.get(i).setSelectionProbability(prob);
         }
@@ -109,11 +116,10 @@ public class Population implements IPopulation {
      */
     private void rankingSelectionExponential() {
         sortPopulation();
-        int maxRank = populationSize - 1;
         double prob;
         double normalisation = 0.0;
         for (int i = 0; i < populationSize; i++) {
-            prob = 1 - Math.exp(-maxRank + i);
+            prob = 1 - Math.exp(-i);
             population.get(i).setSelectionProbability(prob);
             normalisation += prob;
         }

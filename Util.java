@@ -36,7 +36,7 @@ class Util {
     // use deterministic crowding or not
     static boolean DETERMINISTIC_CROWDING = false;
     // use island model
-    static boolean ISLAND_MODEL = false;
+    static boolean ISLAND_MODEL = true;
 
     // mutation options for an individual
     enum Mutation {
@@ -49,6 +49,7 @@ class Util {
 
     // parent selection options for a population
     enum ParentSelection {
+        UNIFORM,
         LINEAR_RANK,
         EXPONENTIAL_RANK,
         FPS
@@ -72,7 +73,7 @@ class Util {
     // The ratio of offspring to population size
     final static double OFFSPRING_RATIO = 1.0;
     // The number of individuals in the population
-    final static int POPULATION_SIZE = 50;
+    final static int POPULATION_SIZE = 250;
     // Number of populations in island model
     final static int N_POPULATIONS = 5;
     // epoch (for exchange)
