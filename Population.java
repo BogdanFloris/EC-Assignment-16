@@ -1,9 +1,6 @@
 import org.vu.contest.ContestEvaluation;
 
-import java.util.List;
-import java.util.Random;
-import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.*;
 
 /**
  * Main Population class
@@ -147,7 +144,7 @@ public class Population implements IPopulation {
     @Override
     public void recombine(Random rnd_) {
         if (Util.DETERMINISTIC_CROWDING) {
-            deterministicCrowding();
+            deterministicCrowding(rnd_);
             return;
         }
 
@@ -353,8 +350,28 @@ public class Population implements IPopulation {
     /**
      * Applies deterministic crowding to the population
      */
-    private void deterministicCrowding() {
+    private void deterministicCrowding(Random rnd_) {
+        double[][] parentsValues = new double[Util.N_PARENTS][Util.DIMENSION];
+        double[][] childrenValues;
 
+        Collections.shuffle(matingPool);
+        for (int i = 0; i < populationSize; i += Util.N_PARENTS) {
+            parentsValues[0] = matingPool.get(i).values;
+            parentsValues[1] = matingPool.get(i + 1).values;
+
+            try {
+                childrenValues = chooseRecombination(rnd_, parentsValues);
+            }
+            catch (NullPointerException e) {
+                throw new NullPointerException("Invalid recombination");
+            }
+
+            for (int j = 0; j < Util.N_PARENTS; j++) {
+                if (childrenValues != null) {
+                    offspring.add(new Individual(childrenValues[j]));
+                }
+            }
+        }
     }
 
 
