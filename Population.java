@@ -64,6 +64,9 @@ public class Population implements IPopulation {
 
     @Override
     public void selectParents(Random rnd_) {
+        if (Util.FITNESS_SHARING) {
+            fitnessSharing();
+        }
         switch (Util.parentSelection) {
             case LINEAR_RANK:
                 rankingSelectionLinear();
@@ -226,8 +229,8 @@ public class Population implements IPopulation {
         double[][] childrenValues = new double[Util.N_PARENTS][Util.DIMENSION];
         double alpha = rnd_.nextDouble();
         for (int i = 0; i < Util.DIMENSION; i++) {
-            childrenValues[0][i] = alpha * parentsValues[0][i] + (1 - alpha * parentsValues[1][i]);
-            childrenValues[1][i] = alpha * parentsValues[1][i] + (1 - alpha * parentsValues[0][i]);
+            childrenValues[0][i] = alpha * parentsValues[0][i] + (1 - alpha) * parentsValues[1][i];
+            childrenValues[1][i] = alpha * parentsValues[1][i] + (1 - alpha) * parentsValues[0][i];
         }
         return childrenValues;
     }
@@ -240,6 +243,7 @@ public class Population implements IPopulation {
      * @return the values of the children
      */
     private double[][] blendRecombination(Random rnd_, double[][] parentsValues) {
+        // TODO: verify this method
         double[][] childrenValues = new double[Util.N_PARENTS][Util.DIMENSION];
         double alpha = 0.5;
         for (int i = 0; i < Util.DIMENSION; i++) {
@@ -298,8 +302,67 @@ public class Population implements IPopulation {
     }
 
     /* ****************************
+     * METHODS FOR MULTI-MODALITY
+     ******************************/
+
+    /**
+     * Applies fitness sharing to the entire population.
+     */
+    private void fitnessSharing() {
+        for (int i = 0; i < populationSize; i++) {
+            double sum = 0.0;
+            for (int j = 0; j < populationSize; j++) {
+                sum += sh(distance(population.get(i), population.get(j)));
+            }
+            population.get(i).setFitness(population.get(i).getFitness() / sum);
+        }
+    }
+
+    /**
+     * Gets the value of the sharing function
+     *
+     * @param distance between two individuals
+     * @return the value of the function
+     */
+    private double sh(double distance) {
+        // determines shape of the sharing function
+        // 1.0 means linear
+        double alpha = 1.0;
+        double sigma_share = Util.SIGMA_SHARE;
+        if (distance <= sigma_share) {
+            return 1 - Math.pow(distance / sigma_share, alpha);
+        }
+        else {
+            return 0.0;
+        }
+    }
+
+    /**
+     * Applies deterministic crowding to the population
+     */
+    private void deterministicCrowding() {
+
+    }
+
+
+    /* ****************************
      * AUXILIARY FUNCTIONS
      ******************************/
+
+    /**
+     * Calculates the distance between two individuals. (Euclidian)
+     *
+     * @param a first individual
+     * @param b second individual
+     * @return distance between a and b
+     */
+    private double distance(Individual a, Individual b) {
+        double distance = 0.0;
+        for (int i = 0; i < a.values.length; i++) {
+            distance += Math.pow(a.values[i] - b.values[i], 2);
+        }
+        return Math.sqrt(distance);
+    }
 
     /**
      * Sorts the population

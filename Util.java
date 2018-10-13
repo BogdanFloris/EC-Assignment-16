@@ -17,6 +17,10 @@ class Util {
     final static double PARENT_LINEAR_S = 2;
     // The number of parents used for recombination
     final static int N_PARENTS = 2;
+    // Sigma share used in fitness sharing (value should be between 5 and 10)
+    final static double SIGMA_SHARE = 5.0;
+    // use fitness sharing or not
+    final static boolean FITNESS_SHARING = false;
 
     // tauSimple
     static double tauSimple;
@@ -29,7 +33,7 @@ class Util {
 
     static Mutation mutation = Mutation.CORRELATED;
     static ParentSelection parentSelection = ParentSelection.EXPONENTIAL_RANK;
-    static Recombination recombination = Recombination.BLEND;
+    static Recombination recombination = Recombination.WHOLE_ARITHMETIC;
     static SurvivorSelection survivorSelection = SurvivorSelection.MU_PLUS_LAMBDA;
 
     // mutation options for an individual
@@ -64,9 +68,9 @@ class Util {
     }
 
     // The ratio of offspring to population size
-    final static double OFFSPRING_RATIO = 1.0;
+    final static double OFFSPRING_RATIO = 2.0;
     // The number of individuals in the population
-    final static int POPULATION_SIZE = 10;
+    final static int POPULATION_SIZE = 5;
 
     Util() {
         tauSimple = 1 / Math.sqrt(DIMENSION);
