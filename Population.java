@@ -146,6 +146,11 @@ public class Population implements IPopulation {
 
     @Override
     public void recombine(Random rnd_) {
+        if (Util.DETERMINISTIC_CROWDING) {
+            deterministicCrowding();
+            return;
+        }
+
         double[][] parentsValues = new double[Util.N_PARENTS][Util.DIMENSION];
         double[][] childrenValues;
 

@@ -19,10 +19,6 @@ class Util {
     final static int N_PARENTS = 2;
     // Sigma share used in fitness sharing (value should be between 5 and 10)
     final static double SIGMA_SHARE = 5.0;
-    // use fitness sharing or not
-    final static boolean FITNESS_SHARING = false;
-    // use deterministic crowding or not
-    final static boolean DETERMINISTIC_CROWDING = true;
 
     // tauSimple
     static double tauSimple;
@@ -37,6 +33,10 @@ class Util {
     static ParentSelection parentSelection = ParentSelection.EXPONENTIAL_RANK;
     static Recombination recombination = Recombination.WHOLE_ARITHMETIC;
     static SurvivorSelection survivorSelection = SurvivorSelection.MU_PLUS_LAMBDA;
+    // use fitness sharing or not
+    static boolean FITNESS_SHARING = false;
+    // use deterministic crowding or not
+    static boolean DETERMINISTIC_CROWDING = false;
 
     // mutation options for an individual
     enum Mutation {
