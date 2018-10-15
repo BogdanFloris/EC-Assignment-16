@@ -66,6 +66,9 @@ public class Population implements IPopulation {
             fitnessSharing();
         }
         switch (Util.parentSelection) {
+            case ROULETTE:
+                sampleParentRoulette(rnd_);
+                return;
             case UNIFORM:
                 uniformParentSelection();
             case FPS:
@@ -127,6 +130,22 @@ public class Population implements IPopulation {
         for (int i = 0; i < populationSize; i++) {
             population.get(i).setSelectionProbability(
                     population.get(i).getSelectionProbability() / normalisation);
+        }
+    }
+
+    /**
+     * Roulette wheel sampling
+     */
+    private void sampleParentRoulette(Random rnd_) {
+        int offspringSizeAdjusted = offspringSize / Util.N_POPULATIONS;
+        while (matingPool.size() < offspringSizeAdjusted) {
+            int i = 0;
+            double cumulativeProb = population.get(i).getSelectionProbability();
+            double r = rnd_.nextDouble();
+            while (cumulativeProb < r) {
+                i++;
+            }
+            matingPool.add(population.get(i));
         }
     }
 

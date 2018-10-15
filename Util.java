@@ -49,6 +49,7 @@ class Util {
 
     // parent selection options for a population
     enum ParentSelection {
+        ROULETTE,
         UNIFORM,
         LINEAR_RANK,
         EXPONENTIAL_RANK,
