@@ -65,7 +65,7 @@ public class player16 implements ContestSubmission {
         while (evaluations > 0) {
             if (Util.ISLAND_MODEL && generation % Util.EPOCH == 0) {
                 try {
-                    population.makeExchange();
+                    population.makeExchange(rnd_);
                 }
                 catch (UnsupportedOperationException e) {
                     System.err.println("Not Island Model");

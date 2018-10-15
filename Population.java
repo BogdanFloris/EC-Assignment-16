@@ -499,6 +499,17 @@ public class Population implements IPopulation {
         population.subList(populationSize - n, populationSize).clear();
     }
 
+    /**
+     * Removes the n randomly selected individuals from the population.
+     *
+     * @param n the number of individuals
+     */
+    void removeRandom(int n)
+    {
+        Collections.shuffle(population);
+        population.subList(populationSize - n, populationSize).clear();
+    }
+
 
     /* ****************************
      * AUXILIARY FUNCTIONS
@@ -551,7 +562,7 @@ public class Population implements IPopulation {
     }
 
     @Override
-    public void makeExchange() {
+    public void makeExchange(Random rnd_) {
         throw new UnsupportedOperationException();
     }
 }

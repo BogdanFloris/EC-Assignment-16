@@ -34,6 +34,7 @@ class Util {
     static Recombination recombination = Recombination.WHOLE_ARITHMETIC;
     static SurvivorSelection survivorSelection = SurvivorSelection.MU_PLUS_LAMBDA;
     static Topology topology = Topology.RANDOM;
+    static Policy policy = Policy.RANDOMRANDOM;
     // use fitness sharing or not
     static boolean FITNESS_SHARING = false;
     // use deterministic crowding or not
@@ -79,6 +80,12 @@ class Util {
         RING,
         TORUS,
         RANDOM
+    }
+
+    // migration policy
+    enum Policy {
+        RANDOMRANDOM,
+        BESTWORST
     }
 
     // The ratio of offspring to population size
