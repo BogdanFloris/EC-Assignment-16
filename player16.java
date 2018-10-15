@@ -20,7 +20,7 @@ public class player16 implements ContestSubmission {
 
     public void setSeed(long seed) {
         // Set seed of algorithms random process
-        rnd_.setSeed(rnd_.nextInt(100000));
+        rnd_.setSeed(seed);
     }
 
     public void setEvaluation(ContestEvaluation evaluation) {
@@ -65,7 +65,7 @@ public class player16 implements ContestSubmission {
         while (evaluations > 0) {
             if (Util.ISLAND_MODEL && generation % Util.EPOCH == 0) {
                 try {
-                    population.makeExchangeRingModel();
+                    population.makeExchange();
                 }
                 catch (UnsupportedOperationException e) {
                     System.err.println("Not Island Model");

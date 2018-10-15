@@ -50,5 +50,5 @@ public interface IPopulation {
      */
     void printFitness();
 
-    void makeExchangeRingModel();
+    void makeExchange();
 }

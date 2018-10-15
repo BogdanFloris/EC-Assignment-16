@@ -466,6 +466,20 @@ public class Population implements IPopulation {
     }
 
     /**
+     * Returns a copy of {@param n} individuals to be exchanged.
+     *
+     * @param n the number of individuals to be exchanged
+     * @return the individuals
+     */
+    List<Individual> getExchange(int n) {
+        List<Individual> toExchange = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            toExchange.add(exchange.remove(i));
+        }
+        return toExchange;
+    }
+
+    /**
      * Adds the list of individuals to the population.
      *
      * @param toAdd list of individuals
@@ -537,7 +551,7 @@ public class Population implements IPopulation {
     }
 
     @Override
-    public void makeExchangeRingModel() {
+    public void makeExchange() {
         throw new UnsupportedOperationException();
     }
 }

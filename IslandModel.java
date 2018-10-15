@@ -1,6 +1,7 @@
 import org.vu.contest.ContestEvaluation;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -70,7 +71,34 @@ public class IslandModel implements IPopulation {
         }
     }
 
-    public void makeExchangeRingModel() {
+    @Override
+    public void makeExchange() {
+        switch (Util.topology) {
+            case RING:
+                makeExchangeRingModel();
+                break;
+            case TORUS:
+                makeExchangeTorus(Util.TORUS_N, Util.TORUS_M);
+                break;
+            case RANDOM:
+                makeExchangeRandom();
+        }
+    }
+
+    private void makeExchangeRandom() {
+        int n = Util.N_EXCHANGED;
+        for (int i = 0; i < numberPopulations; i++) {
+            populations.get(i).bestNIndividuals(n);
+            populations.get(i).removeWorst(n);
+        }
+        List<Population> shuffled = new ArrayList<>(populations);
+        Collections.shuffle(shuffled);
+        for (int i = 0; i < numberPopulations; i++) {
+            populations.get(i).addToPopulation(shuffled.get(i).getExchange());
+        }
+    }
+
+    private void makeExchangeRingModel() {
         int n = Util.N_EXCHANGED;
         for (int i = 0; i < numberPopulations; i++) {
             populations.get(i).bestNIndividuals(n);
@@ -83,6 +111,50 @@ public class IslandModel implements IPopulation {
                 neighbour = 0;
             }
             populations.get(i).addToPopulation(populations.get(neighbour).getExchange());
+        }
+    }
+
+    private void makeExchangeTorus(int n, int m) {
+        int numberExchanged = Util.N_EXCHANGED;
+        for (int i = 0; i < numberPopulations; i++) {
+            populations.get(i).bestNIndividuals(numberExchanged);
+            populations.get(i).removeWorst(numberExchanged);
+        }
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                // Left neighbor
+                if (j != 0) {
+                    populations.get(i * m + j).addToPopulation(populations
+                            .get(i * m + j - 1).getExchange(numberExchanged / 4));
+                } else {
+                    populations.get(i * m + j).addToPopulation(populations
+                            .get(i * m + m - 1).getExchange(numberExchanged / 4));
+                }
+                // Right neighbor
+                if (j != m - 1) {
+                    populations.get(i * m + j).addToPopulation(populations
+                            .get(i * m + j + 1).getExchange(numberExchanged / 4));
+                } else {
+                    populations.get(i * m + j).addToPopulation(populations
+                            .get(i * m).getExchange(numberExchanged / 4));
+                }
+                // Up
+                if (i != 0) {
+                    populations.get(i * m + j).addToPopulation(populations
+                            .get((i - 1) * m + j).getExchange(numberExchanged / 4));
+                } else {
+                    populations.get(i * m + j).addToPopulation(populations
+                            .get((n - 1) * m + j).getExchange(numberExchanged / 4));
+                }
+                // Down
+                if (i != n - 1) {
+                    populations.get(i * m + j).addToPopulation(populations
+                            .get((i + 1) * m + j).getExchange(numberExchanged / 4));
+                } else {
+                    populations.get(i * m + j).addToPopulation(populations
+                            .get(j).getExchange(numberExchanged / 4));
+                }
+            }
         }
     }
 }
