@@ -82,7 +82,7 @@ class Util {
     // epoch (for exchange)
     final static int EPOCH = 50;
     // number of exchanged individuals
-    final static int N_EXCHANGED = 20;
+    final static int N_EXCHANGED = 10;
 
     Util() {
         tauSimple = 1 / Math.sqrt(DIMENSION);
