@@ -65,23 +65,36 @@ public class Population implements IPopulation {
         if (Util.FITNESS_SHARING) {
             fitnessSharing();
         }
-        switch (Util.parentSelection) {
-            case ROULETTE:
-                sampleParentRoulette(rnd_);
-                return;
-            case UNIFORM:
-                uniformParentSelection();
-            case FPS:
-                fitnessProportionalSelection();
-                break;
-            case LINEAR_RANK:
-                rankingSelectionLinear();
-                break;
-            case EXPONENTIAL_RANK:
-                rankingSelectionExponential();
-                break;
+        if (Util.parentSelection == Util.ParentSelection.TOURNAMENT) {
+            tournamentSelection(rnd_);
         }
-        sampleParentSUS(rnd_);
+        else {
+            switch (Util.parentSelection) {
+                case UNIFORM:
+                    uniformParentSelection();
+                case FPS:
+                    fitnessProportionalSelection();
+                    break;
+                case LINEAR_RANK:
+                    rankingSelectionLinear();
+                    break;
+                case EXPONENTIAL_RANK:
+                    rankingSelectionExponential();
+                    break;
+            }
+            sampleParentSUS(rnd_);
+        }
+    }
+
+    private void tournamentSelection(Random rnd_) {
+        while (matingPool.size() < offspringSize) {
+            List<Individual> tournament = new ArrayList<>();
+            for (int i = 0; i < Util.TOURNAMENT_K; i++) {
+                tournament.add(population.get(rnd_.nextInt(populationSize)));
+            }
+            tournament.sort(Comparator.comparingDouble(Individual::getFitness).reversed());
+            matingPool.add(tournament.get(0));
+        }
     }
 
     private void uniformParentSelection() {
@@ -137,15 +150,14 @@ public class Population implements IPopulation {
      * Roulette wheel sampling
      */
     private void sampleParentRoulette(Random rnd_) {
-        int offspringSizeAdjusted = offspringSize / Util.N_POPULATIONS;
-        while (matingPool.size() < offspringSizeAdjusted) {
-            int i = 0;
-            double cumulativeProb = population.get(i).getSelectionProbability();
-            double r = rnd_.nextDouble();
-            while (cumulativeProb < r) {
-                i++;
-            }
-            matingPool.add(population.get(i));
+        List<Double> cumulativeProb = getCumulativeProb();
+         while (matingPool.size() < offspringSize) {
+             int i = 0;
+             double r = rnd_.nextDouble();
+             while (cumulativeProb.get(i) < r) {
+                 i++;
+             }
+             matingPool.add(population.get(i));
         }
     }
 
@@ -153,17 +165,26 @@ public class Population implements IPopulation {
      * Stochastic Universal Sampling
      */
     private void sampleParentSUS(Random rnd_) {
+        List<Double> cumulativeProb = getCumulativeProb();
+        System.out.println(cumulativeProb.get(cumulativeProb.size() - 1));
         double r = rnd_.nextDouble() / (double) offspringSize;
-        double cumulativeProb = 0.0;
         int i = 0;
         while (matingPool.size() < offspringSize) {
-            cumulativeProb += population.get(i).getSelectionProbability();
-            while (r <= cumulativeProb) {
+            while (r <= cumulativeProb.get(i)) {
                 matingPool.add(population.get(i));
                 r += 1 / (double) offspringSize;
             }
             i++;
         }
+    }
+
+    private List<Double> getCumulativeProb() {
+        List<Double> cumulativeProb = new ArrayList<>();
+        cumulativeProb.add(population.get(0).getSelectionProbability());
+        for (int i = 1; i < populationSize; i++) {
+            cumulativeProb.add(cumulativeProb.get(i - 1) + population.get(i).getSelectionProbability());
+        }
+        return cumulativeProb;
     }
 
     /* ****************************

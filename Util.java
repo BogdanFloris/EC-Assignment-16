@@ -17,6 +17,8 @@ class Util {
     final static int N_PARENTS = 2;
     // Sigma share used in fitness sharing (value should be between 5 and 10)
     final static double SIGMA_SHARE = 5.0;
+    // Tournament selection k
+    final static int TOURNAMENT_K = 4;
 
     // tauSimple
     static double tauSimple;
@@ -28,7 +30,7 @@ class Util {
     static double epsilon;
 
     static Mutation mutation = Mutation.CORRELATED;
-    static ParentSelection parentSelection = ParentSelection.EXPONENTIAL_RANK;
+    static ParentSelection parentSelection = ParentSelection.TOURNAMENT;
     static Recombination recombination = Recombination.WHOLE_ARITHMETIC;
     static SurvivorSelection survivorSelection = SurvivorSelection.MU_PLUS_LAMBDA;
     // use fitness sharing or not
@@ -49,11 +51,11 @@ class Util {
 
     // parent selection options for a population
     enum ParentSelection {
-        ROULETTE,
         UNIFORM,
         LINEAR_RANK,
         EXPONENTIAL_RANK,
-        FPS
+        FPS,
+        TOURNAMENT
     }
 
     // recombination options for parents
@@ -80,7 +82,7 @@ class Util {
     // epoch (for exchange)
     final static int EPOCH = 50;
     // number of exchanged individuals
-    final static int N_EXCHANGED = 2;
+    final static int N_EXCHANGED = 20;
 
     Util() {
         tauSimple = 1 / Math.sqrt(DIMENSION);
