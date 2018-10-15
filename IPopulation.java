@@ -50,5 +50,5 @@ public interface IPopulation {
      */
     void printFitness();
 
-    void makeExchange();
+    void makeExchange(Random rnd_);
 }
