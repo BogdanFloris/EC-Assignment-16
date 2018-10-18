@@ -18,7 +18,7 @@ class Util {
     // Sigma share used in fitness sharing (value should be between 5 and 10)
     final static double SIGMA_SHARE = 5.0;
     // Tournament selection k
-    final static int TOURNAMENT_K = 4;
+    final static int TOURNAMENT_K = 2;
 
     // tauSimple
     static double tauSimple;
@@ -91,13 +91,13 @@ class Util {
     // The ratio of offspring to population size
     final static double OFFSPRING_RATIO = 1.0;
     // The number of individuals in the population
-    final static int POPULATION_SIZE = 250; // depends
+    final static int POPULATION_SIZE = 100; // depends
     // Number of populations in island model
-    final static int N_POPULATIONS = 5;
+    final static int N_POPULATIONS = 2;
     // epoch (for exchange)
-    final static int EPOCH = 10; // kinda 50 ish
+    final static int EPOCH = 50; // kinda 50 ish
     // number of exchanged individuals
-    final static int N_EXCHANGED = 4; // between 2-5
+    final static int N_EXCHANGED = 2; // between 2-5
     // torus n and m
     final static int TORUS_N = 2;
     final static int TORUS_M = 5;
@@ -106,6 +106,6 @@ class Util {
         tauSimple = 1 / Math.sqrt(DIMENSION);
         tauPrime = 1 / Math.sqrt(2 * DIMENSION);
         tau = 1 / Math.sqrt(2 * Math.sqrt(DIMENSION));
-        epsilon = 0.1;
+        epsilon = 0.02;
     }
 }
