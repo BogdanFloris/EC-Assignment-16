@@ -51,7 +51,7 @@ public class player16 implements ContestSubmission {
         int evaluations = evaluations_limit_;
         // init population
         IPopulation population;
-        if (Util.ISLAND_MODEL) {
+        if (util.ISLAND_MODEL) {
             population = new IslandModel(rnd_, Util.POPULATION_SIZE);
         }
         else {
@@ -63,7 +63,7 @@ public class player16 implements ContestSubmission {
         int generation = 0;
         // loop
         while (evaluations > 0) {
-            if (Util.ISLAND_MODEL && generation % Util.EPOCH == 0) {
+            if (util.ISLAND_MODEL && generation % Util.EPOCH == 0) {
                 try {
                     population.makeExchange(rnd_);
                 }

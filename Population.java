@@ -12,14 +12,16 @@ public class Population implements IPopulation {
     private List<Individual> offspring;
     private List<Individual> matingPool;
     private List<Individual> exchange;
+    private Util util;
 
     /**
      * Constructor with only a Random object
      *
      * @param rnd_ Random class to be used
      */
-    public Population(Random rnd_, int populationSize) {
+    public Population(Random rnd_, Util util, int populationSize) {
         this.populationSize = populationSize;
+        this.util = util;
 
         double offspringRatio = Util.OFFSPRING_RATIO;
         offspringSize = (int) (populationSize * offspringRatio);
@@ -29,7 +31,7 @@ public class Population implements IPopulation {
         matingPool = new ArrayList<>();
 
         for (int i = 0; i < populationSize; i++) {
-            population.add(new Individual(rnd_));
+            population.add(new Individual(rnd_, util));
         }
     }
 
@@ -62,14 +64,14 @@ public class Population implements IPopulation {
 
     @Override
     public void selectParents(Random rnd_) {
-        if (Util.FITNESS_SHARING) {
+        if (util.FITNESS_SHARING) {
             fitnessSharing();
         }
-        if (Util.parentSelection == Util.ParentSelection.TOURNAMENT) {
+        if (util.parentSelection == Util.ParentSelection.TOURNAMENT) {
             tournamentSelection(rnd_);
         }
         else {
-            switch (Util.parentSelection) {
+            switch (util.parentSelection) {
                 case UNIFORM:
                     uniformParentSelection();
                 case FPS:
@@ -193,7 +195,7 @@ public class Population implements IPopulation {
 
     @Override
     public void recombine(Random rnd_) {
-        if (Util.DETERMINISTIC_CROWDING) {
+        if (util.DETERMINISTIC_CROWDING) {
             deterministicCrowding(rnd_);
             return;
         }
@@ -218,14 +220,14 @@ public class Population implements IPopulation {
 
             for (int j = 0; j < Util.N_PARENTS; j++) {
                 if (childrenValues != null) {
-                    offspring.add(new Individual(childrenValues[j]));
+                    offspring.add(new Individual(childrenValues[j], util));
                 }
             }
         }
     }
 
     private double[][] chooseRecombination(Random rnd_, double[][] parentsValues) {
-        switch (Util.recombination) {
+        switch (util.recombination) {
             case SIMPLE_ARITHMETIC:
                 return singleArithmeticRecombination(rnd_, parentsValues);
             case SINGLE_ARITHMETIC:
@@ -321,7 +323,7 @@ public class Population implements IPopulation {
     public void mutate(Random rnd_, double epsilon)
     {
         for (Individual child: offspring) {
-            child.mutate(Util.mutation, rnd_, epsilon);
+            child.mutate(util.mutation, rnd_, epsilon);
         }
     }
 
@@ -331,7 +333,7 @@ public class Population implements IPopulation {
 
     @Override
     public void selectSurvivors() {
-        switch (Util.survivorSelection) {
+        switch (util.survivorSelection) {
             case GENERATIONAL:
                 generational();
                 break;
@@ -418,7 +420,7 @@ public class Population implements IPopulation {
 
             for (int j = 0; j < Util.N_PARENTS; j++) {
                 if (childrenValues != null) {
-                    offspring.add(new Individual(childrenValues[j]));
+                    offspring.add(new Individual(childrenValues[j], util));
                 }
             }
         }

@@ -10,7 +10,9 @@ class Util {
     // The maximum value that the variables (phenotypes) can take
     final static double MAX_VALUE = 5.0;
     // The step size of the mutation / standard deviation used for nextGaussian
-    final static double MUTATION_STEP_SIZE = 0.25;
+    final static double MUTATION_STEP_SIZE = 0.05;
+    // Rate of the mutation
+    final static double MUTATION_RATE = 0.1;
     // The parameter s used in linear parent selection (P. 82)
     final static double PARENT_LINEAR_S = 2;
     // The number of parents used for recombination
@@ -21,26 +23,24 @@ class Util {
     final static int TOURNAMENT_K = 2;
 
     // tauSimple
-    static double tauSimple;
+    double tauSimple;
     // local tauSimple
-    static double tauPrime;
-    // global tauSimple
-    static double tau;
+    double tauPrime;
     // epsilon
-    static double epsilon;
+    double epsilon;
 
-    static Mutation mutation = Mutation.CORRELATED;
-    static ParentSelection parentSelection = ParentSelection.TOURNAMENT;
-    static Recombination recombination = Recombination.WHOLE_ARITHMETIC;
-    static SurvivorSelection survivorSelection = SurvivorSelection.MU_PLUS_LAMBDA;
-    static Topology topology = Topology.RING;
-    static Policy policy = Policy.BESTWORST;
+    Mutation mutation = Mutation.UNCORRELATED_N_STEP;
+    ParentSelection parentSelection = ParentSelection.LINEAR_RANK;
+    Recombination recombination = Recombination.WHOLE_ARITHMETIC;
+    SurvivorSelection survivorSelection = SurvivorSelection.MU_PLUS_LAMBDA;
+    Topology topology = Topology.RING;
+    Policy policy = Policy.BEST_WORST;
     // use fitness sharing or not
-    static boolean FITNESS_SHARING = false;
+    boolean FITNESS_SHARING;
     // use deterministic crowding or not
-    static boolean DETERMINISTIC_CROWDING = false;
+    boolean DETERMINISTIC_CROWDING;
     // use island model
-    static boolean ISLAND_MODEL = true;
+    boolean ISLAND_MODEL;
 
     // mutation options for an individual
     enum Mutation {
@@ -84,28 +84,54 @@ class Util {
 
     // migration policy
     enum Policy {
-        RANDOMRANDOM,
-        BESTWORST
+        RANDOM_RANDOM,
+        BEST_WORST
     }
 
     // The ratio of offspring to population size
     final static double OFFSPRING_RATIO = 1.0;
     // The number of individuals in the population
-    final static int POPULATION_SIZE = 100; // depends
+    int POPULATION_SIZE; // depends
     // Number of populations in island model
-    final static int N_POPULATIONS = 2;
+    int N_POPULATIONS;
     // epoch (for exchange)
-    final static int EPOCH = 50; // kinda 50 ish
+    int EPOCH; // kinda 50 ish
     // number of exchanged individuals
-    final static int N_EXCHANGED = 2; // between 2-5
+    final static int N_EXCHANGED = 5; // between 2-5
     // torus n and m
     final static int TORUS_N = 2;
     final static int TORUS_M = 5;
 
     Util() {
-        tauSimple = 1 / Math.sqrt(DIMENSION);
-        tauPrime = 1 / Math.sqrt(2 * DIMENSION);
-        tau = 1 / Math.sqrt(2 * Math.sqrt(DIMENSION));
-        epsilon = 0.02;
+        this.DETERMINISTIC_CROWDING = false;
+        this.FITNESS_SHARING = false;
+        this.ISLAND_MODEL = false;
+        this.POPULATION_SIZE = 100;
+        this.N_POPULATIONS = 1;
+        this.EPOCH = 0;
+        tauSimple = 1 / Math.sqrt(2 * DIMENSION);
+        tauPrime = 1 / Math.sqrt(2 * Math.sqrt(DIMENSION));
+        epsilon = 0.01;
+    }
+
+    // Constructor using another Util
+    Util(Util util) {
+        this.POPULATION_SIZE = util.POPULATION_SIZE;
+        this.N_POPULATIONS = util.N_POPULATIONS;
+        this.EPOCH = util.EPOCH;
+        this.DETERMINISTIC_CROWDING = util.DETERMINISTIC_CROWDING;
+        this.FITNESS_SHARING = util.FITNESS_SHARING;
+        this.ISLAND_MODEL = util.ISLAND_MODEL;
+    }
+
+    void changeIslandUtils(int nPopulations, int epoch) {
+        this.N_POPULATIONS = nPopulations;
+        this.EPOCH = epoch;
+    }
+
+    void changeMutationParameters(double tauSimple, double tauPrime, double epsilon) {
+        this.tauSimple = tauSimple;
+        this.tauPrime = tauPrime;
+        this.epsilon = epsilon;
     }
 }

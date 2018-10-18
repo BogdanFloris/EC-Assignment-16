@@ -20,18 +20,22 @@ class Individual {
     private double[] alphas;
     // covariance matrix used for the correlated mutation
     private double[][] cov;
+    // Utility class
+    private Util util;
 
     /**
      * Constructor with only a Random object
      *
      * @param rnd_ Random class to be used
      */
-    Individual(Random rnd_) {
+    Individual(Random rnd_, Util util) {
+        this.util = util;
         this.values = new double[Util.DIMENSION];
         this.fitness = 0.0;
+        this.selectionProbability = 0.0;
         // initialize values
         for (int i = 0; i < this.values.length; i++) {
-            this.values[i] = generateInRange(rnd_.nextDouble());
+            this.values[i] = generateInRange(rnd_.nextDouble(), rnd_);
         }
         this.sigmas = new double[Util.DIMENSION];
         for (int i = 0; i < this.sigmas.length; i++) {
@@ -44,7 +48,8 @@ class Individual {
      *
      * @param values the values inherited
      */
-    Individual(double[] values) {
+    Individual(double[] values, Util util) {
+        this.util = util;
         this.values = values.clone();
         this.fitness = 0.0;
         this.sigmas = new double[Util.DIMENSION];
@@ -75,17 +80,17 @@ class Individual {
         }
     }
 
-    public double getFitness() {
+    double getFitness() {
         return fitness;
     }
 
-    public void setFitness(double fitness) {
+    void setFitness(double fitness) {
         this.fitness = fitness;
     }
 
-    public double getSelectionProbability() { return selectionProbability; }
+    double getSelectionProbability() { return selectionProbability; }
 
-    public void setSelectionProbability(double prob) { this.selectionProbability = prob; }
+    void setSelectionProbability(double prob) { this.selectionProbability = prob; }
 
     /**
      * Uniform Mutation
@@ -95,8 +100,8 @@ class Individual {
     private void uniformMutation(Random rnd_) {
         for (int i = 0; i < this.values.length; i++) {
             double chance = rnd_.nextDouble();
-            if (chance < sigma) {
-                this.values[i] = generateInRange(rnd_.nextGaussian());
+            if (chance < Util.MUTATION_RATE) {
+                this.values[i] = generateInRange(rnd_.nextGaussian(), rnd_);
             }
         }
     }
@@ -121,7 +126,7 @@ class Individual {
      */
     private void uncorrelatedMutationOneStep(Random rnd_, double epsilon) {
         this.sigma = Math.max(epsilon, this.sigma * Math.exp(
-                Util.tauSimple * rnd_.nextGaussian()));
+                util.tauSimple * rnd_.nextGaussian()));
         for (int i = 0; i < this.values.length; i++) {
             this.values[i] += this.sigma * rnd_.nextGaussian();
             // make sure the values stay within bounds
@@ -135,14 +140,15 @@ class Individual {
      * @param rnd_ Random object to be used
      */
     private void uncorrelatedMutationNStep(Random rnd_, double epsilon) {
-        double tau = Util.tau;
-        double tauPrime = Util.tauPrime;
+        double tauSimple = util.tauSimple;
+        double tauPrime = util.tauPrime;
         double tauGauss = tauPrime * rnd_.nextGaussian();
 
         for (int i = 0; i < this.values.length; i++) {
+            double gaussSample = rnd_.nextGaussian();
             this.sigmas[i] = Math.max(epsilon, this.sigmas[i] * Math.exp(
-                    tauGauss + tau * rnd_.nextGaussian()));
-            this.values[i] += this.sigmas[i] * rnd_.nextGaussian();
+                    tauGauss + tauSimple * gaussSample));
+            this.values[i] += this.sigmas[i] * gaussSample;
             this.values[i] = keepInRange(this.values[i]);
         }
     }
@@ -154,8 +160,8 @@ class Individual {
      */
     private void correlatedMutation(Random rnd_, double epsilon) {
         // initialize parameters
-        double tau = Util.tau;
-        double tauPrime = Util.tauPrime;
+        double tau = util.tauSimple;
+        double tauPrime = util.tauPrime;
         double beta = 5;
         int n = Util.DIMENSION;
 
@@ -169,7 +175,7 @@ class Individual {
         // covariance matrix
         this.cov = new double[n][n];
         // change in x to be added (sampled from the multivariate normal dist)
-        double[] dx = new double[n];
+        double[] dx;
 
         // mutate sigmas
         for (int i = 0; i < n; i++) {
@@ -253,7 +259,11 @@ class Individual {
      * @param val the random generated value
      * @return the value in range
      */
-    private double generateInRange(double val) {
+    private double generateInRange(double val, Random rnd_) {
+        val = val * 5.0;
+        if (rnd_.nextBoolean()) {
+            val *= -1;
+        }
         return val * (Util.MAX_VALUE - Util.MIN_VALUE) + Util.MIN_VALUE;
     }
 

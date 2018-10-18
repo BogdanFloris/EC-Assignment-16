@@ -8,13 +8,15 @@ import java.util.Random;
 public class IslandModel implements IPopulation {
     private List<Population> populations;
     private int numberPopulations;
+    private Util util;
 
-    public IslandModel(Random rnd_, int populationSize) {
-        this.numberPopulations = Util.N_POPULATIONS;
+    public IslandModel(Random rnd_, Util util, int populationSize) {
+        this.util = util;
+        this.numberPopulations = util.N_POPULATIONS;
         this.populations = new ArrayList<>();
         int subPopSize = populationSize / numberPopulations;
         for (int i = 0; i < numberPopulations; i++) {
-            populations.add(new Population(rnd_, subPopSize));
+            populations.add(new Population(rnd_, util, subPopSize));
         }
     }
 
@@ -73,14 +75,14 @@ public class IslandModel implements IPopulation {
 
 
     public void exchangeSelection(int n, Random rnd_){
-        switch (Util.policy) {
-            case BESTWORST:
+        switch (util.policy) {
+            case BEST_WORST:
                 for (int i = 0; i < numberPopulations; i++) {
                     populations.get(i).bestNIndividuals(n);
                     populations.get(i).removeWorst(n);
                 }
                 break;
-            case RANDOMRANDOM:
+            case RANDOM_RANDOM:
                 for (int i = 0; i < numberPopulations; i++) {
                     populations.get(i).randomNIndividuals(n,rnd_);
                     populations.get(i).removeRandom(n);
@@ -92,7 +94,7 @@ public class IslandModel implements IPopulation {
 
     @Override
     public void makeExchange(Random rnd_) {
-        switch (Util.topology) {
+        switch (util.topology) {
             case RING:
                 makeExchangeRingModel(rnd_);
                 break;
