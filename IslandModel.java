@@ -74,13 +74,13 @@ public class IslandModel implements IPopulation {
 
     public void exchangeSelection(int n, Random rnd_){
         switch (Util.policy) {
-            case RANDOMRANDOM:
+            case BESTWORST:
                 for (int i = 0; i < numberPopulations; i++) {
                     populations.get(i).bestNIndividuals(n);
                     populations.get(i).removeWorst(n);
                 }
                 break;
-            case BESTWORST:
+            case RANDOMRANDOM:
                 for (int i = 0; i < numberPopulations; i++) {
                     populations.get(i).randomNIndividuals(n,rnd_);
                     populations.get(i).removeRandom(n);

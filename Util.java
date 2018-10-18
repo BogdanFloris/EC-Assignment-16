@@ -33,8 +33,8 @@ class Util {
     static ParentSelection parentSelection = ParentSelection.TOURNAMENT;
     static Recombination recombination = Recombination.WHOLE_ARITHMETIC;
     static SurvivorSelection survivorSelection = SurvivorSelection.MU_PLUS_LAMBDA;
-    static Topology topology = Topology.RANDOM;
-    static Policy policy = Policy.RANDOMRANDOM;
+    static Topology topology = Topology.RING;
+    static Policy policy = Policy.BESTWORST;
     // use fitness sharing or not
     static boolean FITNESS_SHARING = false;
     // use deterministic crowding or not
@@ -91,11 +91,11 @@ class Util {
     // The ratio of offspring to population size
     final static double OFFSPRING_RATIO = 1.0;
     // The number of individuals in the population
-    final static int POPULATION_SIZE = 500; // depends
+    final static int POPULATION_SIZE = 250; // depends
     // Number of populations in island model
-    final static int N_POPULATIONS = 10;
+    final static int N_POPULATIONS = 5;
     // epoch (for exchange)
-    final static int EPOCH = 50; // kinda 50 ish
+    final static int EPOCH = 10; // kinda 50 ish
     // number of exchanged individuals
     final static int N_EXCHANGED = 4; // between 2-5
     // torus n and m
