@@ -338,6 +338,9 @@ public class Population implements IPopulation {
             case MU_PLUS_LAMBDA:
                 muPlusLambda();
                 break;
+            case MU_LAMBDA:
+                muLambda();
+                break;
             case TOURNAMENT:
                 break;
         }
@@ -359,6 +362,16 @@ public class Population implements IPopulation {
         population.addAll(offspring);
         sortPopulationReverse();
         population.subList(populationSize, populationSize + offspringSize).clear();
+    }
+
+    /**
+     * Discards all parents and keeps the best @{populationSize} from the offspring list.
+     */
+    public void muLambda() {
+        population.clear();
+        sortOffspringReverse();
+        offspring.subList(populationSize, offspringSize).clear();
+        population.addAll(offspring);
     }
 
     /* ****************************
@@ -542,6 +555,13 @@ public class Population implements IPopulation {
      */
     private void sortPopulationReverse() {
         population.sort(Comparator.comparingDouble(Individual::getFitness).reversed());
+    }
+
+    /**
+     * Sorts the offspring list and reverses it.
+     */
+    private void sortOffspringReverse() {
+        offspring.sort(Comparator.comparingDouble(Individual::getFitness).reversed());
     }
 
     public void printFitness()

@@ -72,6 +72,7 @@ class Util {
     enum SurvivorSelection {
         GENERATIONAL,
         MU_PLUS_LAMBDA,
+        MU_LAMBDA,
         TOURNAMENT
     }
 
