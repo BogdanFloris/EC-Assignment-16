@@ -30,7 +30,7 @@ class Util {
     double epsilon;
 
     Mutation mutation = Mutation.UNCORRELATED_N_STEP;
-    ParentSelection parentSelection = ParentSelection.LINEAR_RANK;
+    ParentSelection parentSelection = ParentSelection.TOURNAMENT;
     Recombination recombination = Recombination.WHOLE_ARITHMETIC;
     SurvivorSelection survivorSelection = SurvivorSelection.MU_PLUS_LAMBDA;
     Topology topology = Topology.RING;

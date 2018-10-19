@@ -58,7 +58,6 @@ public class player16 implements ContestSubmission {
             populationSize = 250;
             util.changeIslandUtils(5, 50);
             util.changeMutationParameters(0.02, 2, 0.2);
-            util.parentSelection = Util.ParentSelection.TOURNAMENT;
         }
     }
 
