@@ -47,13 +47,13 @@ public class player16 implements ContestSubmission {
         // initialize util class depending on the function that we are evaluating
         util = new Util();
         if (bentCigarFunction) {
-            populationSize = 40;
+            populationSize = 50;
             util.changeMutationParameters(0.02, 2, 0.2);
         }
         else if (schaffersFunction) {
             populationSize = 250;
             util.changeIslandUtils(5, 50);
-            util.changeMutationParameters(0.02, 3, 0.2);
+            util.changeMutationParameters(0.02, 2, 0.2);
         }
         else if (katsuuraFunction) {
             populationSize = 250;
