@@ -50,5 +50,15 @@ public interface IPopulation {
      */
     void printFitness();
 
+    /**
+     * Computes the sum of the allele-values of all of the individuals in the population.
+     */
+    double[] getSumValues();
+
+    /**
+     * Computes population diversity measure due to Morrison & de Jong (2001).
+     */
+    double[] getDiversity(double[] meanValues);
+
     void makeExchange(Random rnd_);
 }

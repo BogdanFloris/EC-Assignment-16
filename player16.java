@@ -68,6 +68,10 @@ public class player16 implements ContestSubmission {
         // initialize time dependent variables
         double timeDependentEval;
         double mutationEpsilon;
+        // Population statistic
+        double[] sumValues;
+        double[] meanValues = new double[Util.DIMENSION];
+        double[] diversity;
         // init population
         IPopulation population;
         if (util.ISLAND_MODEL) {
@@ -109,6 +113,23 @@ public class player16 implements ContestSubmission {
             // Select survivors
             population.selectSurvivors();
             // population.printFitness();
+
+            // Compute generational population statistics
+            if (Util.COMPUTE_STATS) {
+                // Get the sum of the population allele-values
+                sumValues = population.getSumValues();
+                // Compute the mean from the sum value
+                for (int i = 0; i < Util.DIMENSION; i++) {
+                    meanValues[i] = sumValues[i] / (double) populationSize;
+                }
+                // Compute the single diversity value
+                diversity = population.getDiversity(meanValues);
+                double d = 0.0;
+                for (int i = 0; i < Util.DIMENSION; i++) {
+                    d += diversity[i];
+                }
+                System.out.println("Generation: " + generation + "Diversity: " + d);
+            }
             generation++;
         }
     }

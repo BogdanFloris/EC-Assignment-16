@@ -3,6 +3,8 @@
  * e.g.: constants, public methods, variables used for the program
  */
 class Util {
+    // Compute population statistics (diversity)
+    final static boolean COMPUTE_STATS = false;
     // Dimension of the functions; 10 dimensions
     final static int DIMENSION = 10;
     // The minimum value that the variables (phenotypes) can take

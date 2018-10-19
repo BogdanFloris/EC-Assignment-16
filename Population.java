@@ -571,6 +571,34 @@ public class Population implements IPopulation {
         System.out.print(s.toString());
     }
 
+    /**
+     * Computes the sum of the allele-values of all of the individuals in the population.
+     */
+    public double[] getSumValues()
+    {
+        double[] sumValues = new double[Util.DIMENSION];
+        for (Individual ind: population) {
+            for (int i = 0; i < Util.DIMENSION; i++) {
+                sumValues[i] += ind.values[i];
+            }
+        }
+        return sumValues;
+    }
+
+    /**
+     * Computes population diversity measure due to Morrison & de Jong (2001).
+     */
+    public double[] getDiversity(double[] meanValues)
+    {
+        double[] diversity = new double[Util.DIMENSION];
+        for (Individual ind: population) {
+            for (int i = 0; i < Util.DIMENSION; i++) {
+                diversity[i] += Math.pow(ind.values[i] - meanValues[i], 2);
+            }
+        }
+        return diversity;
+    }
+
     @Override
     public void makeExchange(Random rnd_) {
         throw new UnsupportedOperationException();

@@ -73,6 +73,32 @@ public class IslandModel implements IPopulation {
         }
     }
 
+    public double[] getSumValues()
+    {
+        double[] sumValues = new double[Util.DIMENSION];
+        double[] s;
+        for (Population population: populations) {
+            s = population.getSumValues();
+            for (int i = 0; i < Util.DIMENSION; i++) {
+                sumValues[i] += s[i];
+            }
+        }
+        return sumValues;
+    }
+
+    public double[] getDiversity(double[] meanValues)
+    {
+        double[] diversity = new double[Util.DIMENSION];
+        double[] d;
+        for (Population population: populations) {
+            d = population.getDiversity(meanValues);
+            for (int i = 0; i < Util.DIMENSION; i++) {
+                diversity[i] += d[i];
+            }
+        }
+        return diversity;
+    }
+
     @Override
     public void makeExchange(Random rnd_) {
         switch (util.topology) {
