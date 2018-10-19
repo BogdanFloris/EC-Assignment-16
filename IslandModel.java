@@ -73,25 +73,6 @@ public class IslandModel implements IPopulation {
         }
     }
 
-
-    public void exchangeSelection(int n, Random rnd_){
-        switch (util.policy) {
-            case BEST_WORST:
-                for (int i = 0; i < numberPopulations; i++) {
-                    populations.get(i).bestNIndividuals(n);
-                    populations.get(i).removeWorst(n);
-                }
-                break;
-            case RANDOM_RANDOM:
-                for (int i = 0; i < numberPopulations; i++) {
-                    populations.get(i).randomNIndividuals(n,rnd_);
-                    populations.get(i).removeRandom(n);
-                }
-                break;
-        }
-
-    }
-
     @Override
     public void makeExchange(Random rnd_) {
         switch (util.topology) {
@@ -118,26 +99,20 @@ public class IslandModel implements IPopulation {
 
     private void makeExchangeRingModel(Random rnd_) {
         int n = Util.N_EXCHANGED;
-        for (int i = 0; i < numberPopulations; i++) {
-            populations.get(i).bestNIndividuals(n);
-            populations.get(i).removeWorst(n);
-        }
+        exchangeSelection(n, rnd_);
 
-        for (int i = 0; i < numberPopulations; i++) {
-            int neighbour = i + 1;
+        for (int i = 1; i <= numberPopulations; i++) {
+            int neighbour = i;
             if (neighbour == numberPopulations) {
                 neighbour = 0;
             }
-            populations.get(i).addToPopulation(populations.get(neighbour).getExchange());
+            populations.get(i - 1).addToPopulation(populations.get(neighbour).getExchange());
         }
     }
 
     private void makeExchangeTorus(int n, int m, Random rnd_) {
         int numberExchanged = Util.N_EXCHANGED;
-        for (int i = 0; i < numberPopulations; i++) {
-            populations.get(i).bestNIndividuals(numberExchanged);
-            populations.get(i).removeWorst(numberExchanged);
-        }
+        exchangeSelection(numberExchanged, rnd_);
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
                 // Left neighbor
@@ -174,5 +149,23 @@ public class IslandModel implements IPopulation {
                 }
             }
         }
+    }
+
+    private void exchangeSelection(int n, Random rnd_){
+        switch (util.policy) {
+            case BEST_WORST:
+                for (int i = 0; i < numberPopulations; i++) {
+                    populations.get(i).bestNIndividuals(n);
+                    populations.get(i).removeWorst(n);
+                }
+                break;
+            case RANDOM_RANDOM:
+                for (int i = 0; i < numberPopulations; i++) {
+                    populations.get(i).randomNIndividuals(n, rnd_);
+                    populations.get(i).removeRandom(n);
+                }
+                break;
+        }
+
     }
 }

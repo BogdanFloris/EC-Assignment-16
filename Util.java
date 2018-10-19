@@ -14,7 +14,7 @@ class Util {
     // Rate of the mutation
     final static double MUTATION_RATE = 0.1;
     // The parameter s used in linear parent selection (P. 82)
-    final static double PARENT_LINEAR_S = 2;
+    final static double PARENT_LINEAR_S = 2.0;
     // The number of parents used for recombination
     final static int N_PARENTS = 2;
     // Sigma share used in fitness sharing (value should be between 5 and 10)
@@ -127,6 +127,7 @@ class Util {
     void changeIslandUtils(int nPopulations, int epoch) {
         this.N_POPULATIONS = nPopulations;
         this.EPOCH = epoch;
+        this.ISLAND_MODEL = true;
     }
 
     void changeMutationParameters(double tauSimple, double tauPrime, double epsilon) {

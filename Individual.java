@@ -20,6 +20,8 @@ class Individual {
     private double[] alphas;
     // covariance matrix used for the correlated mutation
     private double[][] cov;
+    // rank of this individual in the population
+    private int rank;
     // Utility class
     private Util util;
 
@@ -32,6 +34,7 @@ class Individual {
         this.util = util;
         this.values = new double[Util.DIMENSION];
         this.fitness = 0.0;
+        this.rank = 0;
         this.selectionProbability = 0.0;
         // initialize values
         for (int i = 0; i < this.values.length; i++) {
@@ -52,6 +55,7 @@ class Individual {
         this.util = util;
         this.values = values.clone();
         this.fitness = 0.0;
+        this.rank = 0;
         this.sigmas = new double[Util.DIMENSION];
         for (int i = 0; i < this.sigmas.length; i++) {
             this.sigmas[i] = sigma;
@@ -88,9 +92,21 @@ class Individual {
         this.fitness = fitness;
     }
 
-    double getSelectionProbability() { return selectionProbability; }
+    double getSelectionProbability() {
+        return selectionProbability;
+    }
 
-    void setSelectionProbability(double prob) { this.selectionProbability = prob; }
+    void setSelectionProbability(double prob) {
+        this.selectionProbability = prob;
+    }
+
+    int getRank() {
+        return rank;
+    }
+
+    void setRank(int rank) {
+        this.rank = rank;
+    }
 
     /**
      * Uniform Mutation

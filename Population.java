@@ -19,7 +19,7 @@ public class Population implements IPopulation {
      *
      * @param rnd_ Random class to be used
      */
-    public Population(Random rnd_, Util util, int populationSize) {
+    Population(Random rnd_, Util util, int populationSize) {
         this.populationSize = populationSize;
         this.util = util;
 
@@ -64,9 +64,6 @@ public class Population implements IPopulation {
 
     @Override
     public void selectParents(Random rnd_) {
-        if (util.FITNESS_SHARING) {
-            fitnessSharing();
-        }
         if (util.parentSelection == Util.ParentSelection.TOURNAMENT) {
             tournamentSelection(rnd_);
         }
@@ -75,6 +72,9 @@ public class Population implements IPopulation {
                 case UNIFORM:
                     uniformParentSelection();
                 case FPS:
+                    if (util.FITNESS_SHARING) {
+                        fitnessSharing();
+                    }
                     fitnessProportionalSelection();
                     break;
                 case LINEAR_RANK:
@@ -119,11 +119,11 @@ public class Population implements IPopulation {
      * Linear ranking
      */
     private void rankingSelectionLinear() {
-        sortPopulation();
+        rankPopulation();
         double prob;
         double s = Util.PARENT_LINEAR_S;
         for (int i = 0; i < populationSize; i++) {
-            prob = ((2 - s) / populationSize) + (2 * i * (s - 1) /
+            prob = ((2 - s) / populationSize) + (2 * population.get(i).getRank() * (s - 1) /
                     (populationSize * (populationSize - 1)));
             population.get(i).setSelectionProbability(prob);
         }
@@ -133,11 +133,11 @@ public class Population implements IPopulation {
      * Exponential ranking
      */
     private void rankingSelectionExponential() {
-        sortPopulation();
+        rankPopulation();
         double prob;
         double normalisation = 0.0;
         for (int i = 0; i < populationSize; i++) {
-            prob = 1 - Math.exp(-i);
+            prob = 1 - Math.exp(-1 * population.get(i).getRank());
             population.get(i).setSelectionProbability(prob);
             normalisation += prob;
         }
@@ -145,6 +145,15 @@ public class Population implements IPopulation {
         for (int i = 0; i < populationSize; i++) {
             population.get(i).setSelectionProbability(
                     population.get(i).getSelectionProbability() / normalisation);
+        }
+    }
+
+
+    private void rankPopulation() {
+        sortPopulationReverse();
+        int maxRank = populationSize - 1;
+        for (int i = 0; i < populationSize; i++) {
+            population.get(i).setRank(maxRank - i);
         }
     }
 

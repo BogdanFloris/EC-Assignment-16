@@ -9,6 +9,8 @@ public class player16 implements ContestSubmission {
     Random rnd_;
     ContestEvaluation evaluation_;
     private int evaluations_limit_;
+    private int populationSize;
+    private Util util;
 
     public static void main(String[] args) {
         System.out.println("Test");
@@ -20,7 +22,7 @@ public class player16 implements ContestSubmission {
 
     public void setSeed(long seed) {
         // Set seed of algorithms random process
-        rnd_.setSeed(rnd_.nextInt(1000000));
+        rnd_.setSeed(seed);
     }
 
     public void setEvaluation(ContestEvaluation evaluation) {
@@ -37,25 +39,42 @@ public class player16 implements ContestSubmission {
         boolean hasStructure = Boolean.parseBoolean(props.getProperty("Regular"));
         boolean isSeparable = Boolean.parseBoolean(props.getProperty("Separable"));
 
-        // Do sth with property values, e.g. specify relevant settings of your algorithm
-        if (isMultimodal) {
-            // Do sth
-        } else {
-            // Do sth else
+        // get the function that we are evaluating
+        boolean bentCigarFunction = !(isMultimodal || hasStructure || isSeparable);
+        boolean schaffersFunction = isMultimodal && hasStructure && !isSeparable;
+        boolean katsuuraFunction = isMultimodal && !(hasStructure || isSeparable);
+
+        // initialize util class depending on the function that we are evaluating
+        util = new Util();
+        if (bentCigarFunction) {
+            populationSize = 40;
+            util.changeMutationParameters(0.02, 2, 0.2);
+        }
+        else if (schaffersFunction) {
+            populationSize = 50;
+            util.changeMutationParameters(0.02, 3, 0.2);
+        }
+        else if (katsuuraFunction) {
+            populationSize = 250;
+            util.changeIslandUtils(5, 50);
+            util.changeMutationParameters(0.02, 2, 0.2);
+            util.parentSelection = Util.ParentSelection.TOURNAMENT;
         }
     }
 
     public void run() {
         // Run your algorithm here
-
         int evaluations = evaluations_limit_;
+        // initialize time dependent variables
+        double timeDependentEval;
+        double mutationEpsilon;
         // init population
         IPopulation population;
         if (util.ISLAND_MODEL) {
-            population = new IslandModel(rnd_, Util.POPULATION_SIZE);
+            population = new IslandModel(rnd_, util, populationSize);
         }
         else {
-            population = new Population(rnd_, Util.POPULATION_SIZE);
+            population = new Population(rnd_, util, populationSize);
         }
         // calculate fitness
         evaluations -= population.evalInitialPopulation(evaluation_);
@@ -63,7 +82,7 @@ public class player16 implements ContestSubmission {
         int generation = 0;
         // loop
         while (evaluations > 0) {
-            if (util.ISLAND_MODEL && generation % Util.EPOCH == 0) {
+            if (util.ISLAND_MODEL && generation % util.EPOCH == 0) {
                 try {
                     population.makeExchange(rnd_);
                 }
@@ -71,17 +90,20 @@ public class player16 implements ContestSubmission {
                     System.err.println("Not Island Model");
                 }
             }
+            // change time dependent variables
+            timeDependentEval = (double) evaluations / evaluations_limit_;
+            mutationEpsilon = util.epsilon * Math.pow(timeDependentEval, 4);
             // Select parents
             population.selectParents(rnd_);
             // Apply crossover / mutation operators
             population.recombine(rnd_);
-            population.mutate(rnd_, Util.epsilon);
+            population.mutate(rnd_, mutationEpsilon);
 
             try {
                 evaluations -= population.evalOffspring(evaluation_);
             }
             catch (NullPointerException e) {
-                System.out.println("\033[1mEvaluation limit reached!\033[0m");
+                System.out.println("Evaluation limit reached");
                 break;
             }
             // Select survivors
