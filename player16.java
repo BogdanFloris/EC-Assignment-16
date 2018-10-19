@@ -22,7 +22,7 @@ public class player16 implements ContestSubmission {
 
     public void setSeed(long seed) {
         // Set seed of algorithms random process
-        rnd_.setSeed(seed);
+        rnd_.setSeed(rnd_.nextInt(10000000));
     }
 
     public void setEvaluation(ContestEvaluation evaluation) {

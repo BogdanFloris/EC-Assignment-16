@@ -177,7 +177,6 @@ public class Population implements IPopulation {
      */
     private void sampleParentSUS(Random rnd_) {
         List<Double> cumulativeProb = getCumulativeProb();
-        System.out.println(cumulativeProb.get(cumulativeProb.size() - 1));
         double r = rnd_.nextDouble() / (double) offspringSize;
         int i = 0;
         while (matingPool.size() < offspringSize) {
