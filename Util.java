@@ -97,9 +97,9 @@ class Util {
     // epoch (for exchange)
     int EPOCH; // kinda 50 ish
     // number of exchanged individuals
-    final static int N_EXCHANGED = 5; // between 2-5
+    final static int N_EXCHANGED = 8; // between 2-5
     // torus n and m
-    final static int TORUS_N = 2;
+    final static int TORUS_N = 10;
     final static int TORUS_M = 5;
 
     Util() {
