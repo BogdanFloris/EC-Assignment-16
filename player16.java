@@ -51,9 +51,10 @@ public class player16 implements ContestSubmission {
             util.changeMutationParameters(0.02, 2, 0.2);
         }
         else if (schaffersFunction) {
-            populationSize = 250;
-            util.changeIslandUtils(5, 50);
+            populationSize = 500;
+            util.changeIslandUtils(10, 50);
             util.changeMutationParameters(0.02, 2, 0.2);
+            util.topology = Util.Topology.TORUS;
         }
         else if (katsuuraFunction) {
             populationSize = 250;

@@ -484,8 +484,9 @@ public class Population implements IPopulation {
     List<Individual> getExchange(int n) {
         List<Individual> toExchange = new ArrayList<>();
         for (int i = 0; i < n; i++) {
-            toExchange.add(exchange.remove(i));
+            toExchange.add(exchange.get(i));
         }
+        exchange.subList(0, n).clear();
         return toExchange;
     }
 
